@@ -1,0 +1,347 @@
+{
+  "status": {
+    "draft": {
+      "l": "Draft",
+      "tip": "marked as draft on GitHub."
+    },
+    "conflict": {
+      "l": "Conflict",
+      "tip": "GitHub can't merge the branch into its base. Rebase needed."
+    },
+    "changes": {
+      "l": "Changes requested",
+      "tip": "at least one reviewer requested changes."
+    },
+    "approved": {
+      "l": "Approved",
+      "tip": "enough approvals under the repo's rules. Says nothing about QA or labels: check them before merging."
+    },
+    "review": {
+      "l": "In review",
+      "tip": "not enough approvals yet, no changes requested."
+    },
+    "tipLine": "{label}: {tip}"
+  },
+  "verb": {
+    "APPROVED": "approved",
+    "CHANGES_REQUESTED": "requested changes",
+    "COMMENTED": "commented",
+    "REQUESTED": "review requested, not done yet"
+  },
+  "ci": {
+    "tip": {
+      "success": "CI green: all checks pass",
+      "running": "CI running",
+      "failure": "CI red: at least one check fails",
+      "none": "No checks on the latest commit"
+    },
+    "label": {
+      "success": "passed",
+      "running": "running",
+      "failure": "failed",
+      "none": "none"
+    }
+  },
+  "n": {
+    "commits": "{n} commit | {n} commits",
+    "repos": "{n} repo | {n} repos",
+    "points": "{n} point | {n} points"
+  },
+  "time": {
+    "now": "just now",
+    "min": "{n} min",
+    "h": "{n} h",
+    "d": "{n} d"
+  },
+  "toolbar": {
+    "views": "View",
+    "graph": "Stacks",
+    "graphTip": "One PR per card, grouped by stack. Key 1.",
+    "list": "List",
+    "listTip": "Compact table, with the stack tree. Key 2.",
+    "search": "PR, title, description, branch, label",
+    "searchTip": "Press / to search",
+    "syncMode": "Sync mode",
+    "manual": "Manual",
+    "manualTip": "Data only changes when you click ↻ or press R.",
+    "auto": "Auto · {every}",
+    "autoTip": "Polls GitHub every {every}. Paused while the tab is hidden.",
+    "loading": "Loading…",
+    "agoS": "Synced {n} s ago",
+    "agoM": "Synced {n} min ago",
+    "next": "next in {n}",
+    "sub": "gh api graphql · {repos}",
+    "syncTip": "Time of the last successful gh api graphql request.",
+    "refresh": "Refresh",
+    "refreshTip": "Refresh now (R)",
+    "syncError": "sync error"
+  },
+  "rail": {
+    "views": "Views",
+    "labels": "Labels",
+    "repos": "Repositories",
+    "authors": "Authors",
+    "legend": "Review legend",
+    "noLabels": "No labels",
+    "hideDrafts": "Hide drafts",
+    "hideDraftsTip": "Hides PRs marked as Draft on GitHub.",
+    "rate": "gh quota · {remaining} / {limit} pts/h",
+    "rateTip": "GitHub quota left this hour for gh api calls. The last sync of {repos} cost {points}.",
+    "legendItems": {
+      "approved": "Approved",
+      "changes": "Requested changes",
+      "commented": "Commented",
+      "requested": "Review requested, not done",
+      "stale": "2 commits since their review"
+    },
+    "activeFilters": "active filter | active filters"
+  },
+  "quick": {
+    "all": {
+      "l": "All PRs",
+      "tip": "All open PRs in the tracked repositories."
+    },
+    "mine": {
+      "l": "My PRs",
+      "tip": "PRs you authored."
+    },
+    "approve": {
+      "l": "To approve by me",
+      "tip": "Other people's PRs you already reviewed that got commits after your review (or where your review was requested again)."
+    },
+    "requested": {
+      "l": "Review requested",
+      "tip": "PRs where your review is requested and that you never reviewed."
+    },
+    "conflict": {
+      "l": "In conflict",
+      "tip": "Open PRs (drafts excluded) that GitHub cannot merge into their base without a rebase."
+    },
+    "changes": {
+      "l": "Changes requested",
+      "tip": "At least one reviewer requested changes."
+    }
+  },
+  "summary": {
+    "open": "{n} open PR | {n} open PRs",
+    "stacks": "{n} stack | {n} stacks",
+    "conflicts": "{n} in conflict",
+    "toApprove": "{n} to approve by you",
+    "toApproveTip": "PRs you reviewed that received commits since",
+    "requested": "{n} review requested | {n} reviews requested",
+    "threads": "{n} unresolved comment on your PRs | {n} unresolved comments on your PRs",
+    "collapseAll": "Collapse all",
+    "expandAll": "Expand all",
+    "collapseAllTip": "Collapse all stacks and groups, in both views",
+    "expandAllTip": "Expand all stacks and groups, in both views",
+    "draftConflicts": "+{n} draft in conflict | +{n} drafts in conflict",
+    "draftConflictsTip": "Not urgent: drafts are not ready for review."
+  },
+  "band": {
+    "stack": "Stack · {n} PR | Stack · {n} PRs",
+    "stackTip": "Stacked PRs: each one targets the branch of the previous one",
+    "solo": "Independent · {n} PR | Independent · {n} PRs",
+    "soloTip": "PRs that target the main branch directly, with nothing stacked on them",
+    "baseTip": "Base branch in {repo}",
+    "alert": "{n} PR in conflict | {n} PRs in conflict",
+    "alertTip": "In conflict: {list}",
+    "alertTip2": "PRs above in the stack inherit it on the next rebase.",
+    "forYou": "{n} PR to review | {n} PRs to review",
+    "forYouTip": "PRs in this group waiting for your review",
+    "collapse": "Collapse",
+    "expand": "Expand",
+    "collapseTip": "Collapse this group",
+    "expandTip": "Expand this group",
+    "hiddenLeft": "{n} PR | {n} PRs",
+    "hiddenRight": "{n} hidden PR | {n} hidden PRs",
+    "hintLeftTip": "Back to the start of the stack",
+    "hintRightTip": "Show the rest of the stack. You can also drag the background with the mouse.",
+    "details": "Click for details",
+    "draftAlert": "{n} draft in conflict | {n} drafts in conflict",
+    "draftAlertTip": "Drafts: to rebase before they are marked ready."
+  },
+  "card": {
+    "step1": "Position 1: targets the stack base directly, merge first",
+    "stepN": "Position {n}: merge after #{parent}, whose branch it targets",
+    "conflict": "Conflict · rebase needed",
+    "base": "Base:",
+    "updated": "upd",
+    "updatedTip": "Changed in the last sync",
+    "behind": "Rebase onto {target}",
+    "behindTip": "{base} received commits since the last rebase. No conflict detected.",
+    "waits": "Waits for",
+    "depTip": "Mentioned in the PR description",
+    "blocks": "Blocks",
+    "blocksTip": "{id} waits for this PR",
+    "noReviewer": "No reviewer",
+    "descTip": "Start of the PR description. The full text is in the details.",
+    "noDesc": "No description",
+    "sinceTip": "{commits} pushed since the most recent review",
+    "threadsTip": "{n} unresolved comment out of {total} | {n} unresolved comments out of {total}",
+    "authorTip": "Opened by {name}",
+    "you": "You",
+    "draftConflict": "Conflict",
+    "draftConflictTip": "Draft in conflict with its base: rebase before marking it ready. Not urgent while it is a draft.",
+    "mentions": "Mentions",
+    "moreLinks": "+{n} more | +{n} more"
+  },
+  "review": {
+    "redo": "{commits} pushed since: review needs redoing",
+    "onLatest": "Done on the latest commit",
+    "rerequested": "Review requested again",
+    "staleTip": "{name}: {commits} pushed since their review"
+  },
+  "link": {
+    "label": "GitHub label {name}",
+    "pr": "Open {id} on GitHub",
+    "repo": "Open repository {slug} on GitHub",
+    "open": "Open on GitHub"
+  },
+  "list": {
+    "pr": "Pull request",
+    "status": "Status",
+    "labels": "Labels",
+    "desc": "Description",
+    "author": "Author",
+    "reviews": "Reviews",
+    "since": "Since latest commit",
+    "sinceTip": "Who reviewed the latest commit, and whose review needs redoing",
+    "comments": "Unresolved comments",
+    "ci": "CI · updated",
+    "redo": "{names} to redo",
+    "unresolvedTip": "Unresolved comments",
+    "totalTip": "Total comments",
+    "step1": "Position 1: merge first",
+    "stepN": "Position {n} in the stack",
+    "updated": "Updated"
+  },
+  "drawer": {
+    "close": "Close",
+    "closeTip": "Close (Esc)",
+    "baseBranch": "Base branch",
+    "headBranch": "PR branch",
+    "byline": "{name} · updated {ago} ago",
+    "bylineNow": "{name} · updated just now",
+    "conflictTitle": "Conflict with {base}.",
+    "conflictText": "GitHub can't merge this branch. Rebase onto the base and push again.",
+    "desc": "Description",
+    "noDesc": "No description.",
+    "deps": "Dependencies",
+    "parent": "Parent PR, merge first",
+    "before": "Merge before",
+    "waits": "Waiting on this one",
+    "reviews": "Reviews",
+    "approvals": "{n} approval on the latest commit | {n} approvals on the latest commit",
+    "beforeLatest": "before the latest commit",
+    "pending": "pending",
+    "noReviewers": "No reviewer assigned.",
+    "history": "History",
+    "older": "{n} older commit | {n} older commits",
+    "sinceReview": "{commits} since the last review",
+    "since": "{commits} since",
+    "threads": "Unresolved comments",
+    "threadsCount": "{n} of {total}",
+    "noThreads": "No unresolved comments.",
+    "merge": "Mergeability and checks",
+    "conflictWith": "Conflict with {base}",
+    "rebaseNeeded": "rebase needed",
+    "behindOn": "Behind {base}",
+    "rebaseAdvised": "rebase advised",
+    "computing": "GitHub is still computing mergeability",
+    "mergeableInto": "Mergeable into {base}",
+    "upToDate": "up to date",
+    "checks": "Checks on the latest commit",
+    "files": "Files changed",
+    "copy": "Copy branch",
+    "copyTip": "Copies the PR branch name",
+    "copied": "Branch copied",
+    "copyRefused": "The browser refused the copy",
+    "mentioned": "Mentioned in the description"
+  },
+  "state": {
+    "loadFailed": "Couldn't load PRs",
+    "loadHint": "Check {auth} and the repositories in Options → Repositories and rules, then refresh (R).",
+    "loading": "Loading PRs via {cmd}…",
+    "noPrs": "No open PRs in the tracked repositories.",
+    "noMatch": "No PR matches these filters.",
+    "noRepos": "No tracked repository",
+    "noReposHint": "Add the GitHub repositories to show."
+  },
+  "sync": {
+    "nothing": "Nothing new",
+    "changes": "PRs: {parts}",
+    "new": "{n} new",
+    "changed": "{n} updated",
+    "closed": "{n} closed or merged",
+    "failed": "Sync failed",
+    "unknown": "Unknown error",
+    "modeAuto": "Auto sync every {every}, paused while the tab is hidden",
+    "modeManual": "Manual sync: ↻ button or R key",
+    "linksFailed": "Couldn't look up mentioned PRs",
+    "unexpected": "Unexpected error"
+  },
+  "options": {
+    "title": "Options",
+    "tip": "Language, theme, display, auto sync, CI status",
+    "lang": "Language",
+    "theme": "Theme",
+    "themes": {
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "data": "Data",
+    "ci": "Fetch CI status",
+    "ciHint": "Heavier GitHub queries",
+    "ciOn": "CI status enabled",
+    "ciOff": "CI status disabled",
+    "display": "Display",
+    "auto": "Auto sync interval",
+    "density": {
+      "comfortable": "Normal",
+      "comfortableHint": "Description and links on cards",
+      "compact": "Compact",
+      "compactHint": "Same sizes, no description or links",
+      "ultra": "Ultra compact",
+      "ultraHint": "Smaller cards, rows and panel"
+    },
+    "autoSet": "Auto sync: every {every}",
+    "densitySet": "Display: {name}",
+    "themeSet": "Theme: {name}",
+    "langSet": "Language: English",
+    "settings": "Repositories and rules…",
+    "settingsHint": "No tracked repository | {n} tracked repository | {n} tracked repositories"
+  },
+  "linkState": {
+    "open": "Open",
+    "draft": "Draft",
+    "merged": "Merged",
+    "closed": "Closed"
+  },
+  "every": {
+    "s": "{n} s",
+    "m": "{n} min"
+  },
+  "toast": {
+    "close": "Close"
+  },
+  "settings": {
+    "title": "Repositories and rules",
+    "sub": "Saved in this browser, sent with each sync.",
+    "repos": "Tracked repositories",
+    "noRepos": "No repository yet.",
+    "repoPlaceholder": "owner/repo or GitHub URL",
+    "add": "Add",
+    "remove": "Remove {repo}",
+    "badRepo": "Expected format: owner/repo",
+    "dupRepo": "This repository is already tracked",
+    "rules": "Approval rules",
+    "approvals": "Required approvals",
+    "approvalsHint": "Approvals needed for a PR to count as approved",
+    "fresh": "Only with no commit after",
+    "freshHint": "An approval stops counting once commits are pushed after it",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saved": "Settings saved"
+  }
+}

@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      # lockfile written by npm 11, npm 10 resolves optional peers differently
+      - run: npm install -g npm@11
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run check:locales
+      - run: npm run typecheck
+      - run: npm run build
