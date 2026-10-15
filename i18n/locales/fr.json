@@ -264,7 +264,8 @@
     "copyTip": "Copie le nom de la branche de la PR",
     "copied": "Branche copiée",
     "copyRefused": "Le navigateur a refusé la copie",
-    "mentioned": "Mentionnées dans la description"
+    "mentioned": "Mentionnées dans la description",
+    "emptyComment": "Commentaire vide"
   },
   "state": {
     "loadFailed": "Impossible de charger les PR",
@@ -351,5 +352,8 @@
     "cancel": "Annuler",
     "save": "Enregistrer",
     "saved": "Réglages enregistrés"
+  },
+  "md": {
+    "suggestion": "Modification suggérée"
   }
 }

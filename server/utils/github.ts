@@ -39,7 +39,7 @@ const prFields = (ci: boolean) => `
   ${ci ? 'head: commits(last: 1) { nodes { commit { statusCheckRollup { state } } } }' : ''}
   reviews(last: 40) { nodes { state submittedAt author { login avatarUrl ... on User { name } } commit { oid } } }
   reviewRequests(first: 20) { nodes { requestedReviewer { ... on User { login avatarUrl name } ... on Team { slug } } } }
-  reviewThreads(first: 50) { nodes { isResolved path line originalLine comments(first: 1) { totalCount nodes { body author { login avatarUrl } } } } }
+  reviewThreads(first: 50) { nodes { id isResolved path line originalLine comments(first: 1) { totalCount nodes { body author { login avatarUrl } } } } }
 `
 
 const query = (ci: boolean) => `query($owner: String!, $name: String!, $cursor: String) {
@@ -76,7 +76,7 @@ interface GhPr {
   head?: { nodes: { commit: { statusCheckRollup: { state: string } | null } }[] }
   reviews: { nodes: { state: string, submittedAt: string, author: GhActor | null, commit: { oid: string } | null }[] }
   reviewRequests: { nodes: { requestedReviewer: GhActor | null }[] }
-  reviewThreads: { nodes: { isResolved: boolean, path: string, line: number | null, originalLine: number | null, comments: { totalCount: number, nodes: { body: string, author: GhActor | null }[] } }[] }
+  reviewThreads: { nodes: { id: string, isResolved: boolean, path: string, line: number | null, originalLine: number | null, comments: { totalCount: number, nodes: { body: string, author: GhActor | null }[] } }[] }
 }
 interface GhResponse {
   errors?: { message: string }[]
@@ -169,7 +169,7 @@ function normalize(repos: RepoData[], { approvals, fresh }: Pick<SyncOptions, 'a
       const threads = n.reviewThreads.nodes.filter(t => !t.isResolved).map((t) => {
         const c = t.comments.nodes[0]
         const line = t.line || t.originalLine
-        return { by: person(c?.author), f: `${t.path}${line ? `:${line}` : ''}`, t: c?.body || '' }
+        return { id: t.id, by: person(c?.author), f: `${t.path}${line ? `:${line}` : ''}`, t: c?.body || '' }
       })
       const threadComments = n.reviewThreads.nodes.reduce((a, t) => a + t.comments.totalCount, 0)
       const rollup = n.head?.nodes[0]?.commit.statusCheckRollup

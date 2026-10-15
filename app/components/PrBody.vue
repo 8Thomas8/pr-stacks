@@ -1,9 +1,10 @@
 <script setup lang="ts">
-const props = defineProps<{ body: string }>()
-const html = computed(() => renderMarkdown(props.body))
+const props = defineProps<{ body: string, bare?: boolean }>()
+const { t } = useI18n()
+const html = computed(() => renderMarkdown(props.body, { suggestion: t('md.suggestion') }))
 </script>
 
 <template>
   <!-- eslint-disable-next-line vue/no-v-html -->
-  <div class="body-text md" v-html="html"></div>
+  <div class="md" :class="{ 'body-text': !bare }" v-html="html"></div>
 </template>

@@ -264,7 +264,8 @@
     "copyTip": "Copies the PR branch name",
     "copied": "Branch copied",
     "copyRefused": "The browser refused the copy",
-    "mentioned": "Mentioned in the description"
+    "mentioned": "Mentioned in the description",
+    "emptyComment": "Empty comment"
   },
   "state": {
     "loadFailed": "Couldn't load PRs",
@@ -351,5 +352,8 @@
     "cancel": "Cancel",
     "save": "Save",
     "saved": "Settings saved"
+  },
+  "md": {
+    "suggestion": "Suggested change"
   }
 }

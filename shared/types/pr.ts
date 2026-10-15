@@ -11,6 +11,7 @@ export interface Review {
 }
 
 export interface Thread {
+  id: string
   by: string
   f: string
   t: string
