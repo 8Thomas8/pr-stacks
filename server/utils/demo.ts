@@ -34,7 +34,7 @@ interface Seed {
   behind?: boolean
   reviews?: Review[]
   commits: string[]
-  threads?: Thread[]
+  threads?: Omit<Thread, 'id'>[]
   comments?: number
   dependsOn?: string[]
   links?: LinkedPr[]
@@ -49,7 +49,7 @@ const SEEDS: Seed[] = [
     body: 'Pulls price, VAT and rounding out of the cart component into a tested module.\n\n## Checks\n- [x] unit tests for rounding\n- [x] same totals on the 40 fixture carts\n- [ ] remove the old helper\n\nDesign notes: [pricing module](https://example.com/docs/pricing).',
     reviews: [{ by: 'alice-m', s: 'APPROVED', after: 2, at: ago(30) }, { by: 'emma-g', s: 'CHANGES_REQUESTED', after: 0, at: ago(4) }],
     commits: ['Move price helpers to pricing/', 'Add rounding tests', 'Handle zero VAT countries', 'Rename computeTotal to priceCart'],
-    threads: [{ by: 'emma-g', f: 'src/pricing/vat.ts:42', t: 'Rounding per line or on the total? The invoice service rounds per line.' }, { by: 'emma-g', f: 'src/pricing/index.ts:8', t: 'Can we keep the old export for one release?' }],
+    threads: [{ by: 'emma-g', f: 'src/pricing/vat.ts:42', t: 'Rounding per line or on the total? The invoice service rounds **per line**, see `roundLine()`:\n\n```suggestion\nconst vat = lines.reduce((s, l) => s + roundLine(l.vat), 0)\n```' }, { by: 'emma-g', f: 'src/pricing/index.ts:8', t: 'Can we keep the old export for one release?' }],
     comments: 3, ci: 'success',
   },
   {
@@ -142,7 +142,7 @@ export function demoSnapshot({ ci, approvals, fresh }: Pick<SyncOptions, 'ci' | 
       head: s.head, base: s.base, headOid: sha(s.num, n), conflict: !!s.conflict, behind: !!s.behind, mergeable: s.conflict ? 'CONFLICTING' : 'MERGEABLE',
       status, ci: ci ? s.ci ?? 'none' : 'none', updatedAt: ago(s.updated), labels: s.labels ?? [], reviews,
       commits: s.commits.map((m, i) => [sha(s.num, i), m, ago(s.updated + (n - i) * 5)]), commitCount: n,
-      threads: s.threads ?? [], comments: (s.comments ?? 0) + (s.threads?.length ?? 0),
+      threads: (s.threads ?? []).map((t, i) => ({ ...t, id: `${s.repo}#${s.num}/${i}` })), comments: (s.comments ?? 0) + (s.threads?.length ?? 0),
       dependsOn: s.dependsOn ?? [], links: s.links ?? [],
     }
   })

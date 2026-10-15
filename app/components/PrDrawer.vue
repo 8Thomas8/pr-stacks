@@ -149,10 +149,11 @@ function copyBranch() {
 
           <FoldSection k="drawer:threads" heading="h5" :title="t('drawer.threads')">
             <template #aside>{{ t('drawer.threadsCount', { n: p.threads.length, total: p.comments }) }}</template>
-            <div v-for="(thread, i) in p.threads" :key="i" class="thread">
+            <div v-for="thread in p.threads" :key="thread.id" class="thread">
               <div class="by"><UserAvatar :login="thread.by" />{{ person(thread.by).n }}</div>
               <div class="f">{{ thread.f }}</div>
-              <div class="txt">{{ thread.t }}</div>
+              <PrBody v-if="stripComments(thread.t)" class="txt" :body="stripComments(thread.t)" bare />
+              <div v-else class="txt empty">{{ t('drawer.emptyComment') }}</div>
             </div>
             <div v-if="!p.threads.length" style="color:var(--faint);font-size:13px">{{ t('drawer.noThreads') }}</div>
           </FoldSection>
