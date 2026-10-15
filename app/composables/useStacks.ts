@@ -96,9 +96,10 @@ const toApproveByMe = (p: PullRequest) => !p.draft && p.author !== me.value && p
 const reviewRequested = (p: PullRequest) => !p.draft && p.author !== me.value && p.reviews.some(r => r.by === me.value && r.s === 'REQUESTED')
 const blocking = (p: PullRequest) => p.conflict && !p.draft
 const blocks = (p: PullRequest) => prs.value.filter(o => o.dependsOn.includes(p.id))
+const forMe = (p: PullRequest) => (toApproveByMe(p) ? 'approve' : reviewRequested(p) ? 'requested' : null)
 function pulseClass(p: PullRequest) {
   if (p.conflict || p.draft) return ''
-  if (toApproveByMe(p) || reviewRequested(p)) return 'pulse-review'
+  if (forMe(p)) return 'pulse-review'
   if (p.status === 'changes') return 'pulse-changes'
   return ''
 }
@@ -309,7 +310,7 @@ function start(translate: Translate) {
 export function useStacks() {
   return {
     st, snap, prs, me, repos, forest, visibleBands, QUICK, every,
-    person, byId, submitted, sinceLastReview, toApproveByMe, reviewRequested, blocking, blocks, pulseClass, pathHas, matches,
+    person, byId, submitted, sinceLastReview, toApproveByMe, reviewRequested, forMe, blocking, blocks, pulseClass, pathHas, matches,
     toast, dropToast, setCollapsed, setAllFolded, setFolded, refresh, setMode, setCi, setAutoS, setDensity, setView, start, useTranslate, setSettings,
     lean,
     ls,

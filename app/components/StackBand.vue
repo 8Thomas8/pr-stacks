@@ -9,7 +9,7 @@ const { t } = useI18n()
 const DIMS = {
   comfortable: { CW: 320, CH: 248, GX: 58, GY: 18, EY: 20 },
   compact: { CW: 320, CH: 161, GX: 58, GY: 18, EY: 20 },
-  ultra: { CW: 252, CH: 132, GX: 40, GY: 10, EY: 15 },
+  ultra: { CW: 252, CH: 132, GX: 40, GY: 16, EY: 15 },
 }
 const dims = computed(() => DIMS[st.density])
 const PAD_LEFT = 30

@@ -127,7 +127,7 @@
     "stacks": "{n} pile | {n} piles",
     "conflicts": "{n} en conflit",
     "toApprove": "{n} à approuver par toi",
-    "toApproveTip": "PR que tu as reviewées et qui ont reçu des commits depuis",
+    "toApproveTip": "PR que tu as reviewées et qui ont reçu des commits depuis, ou où ta review a été redemandée",
     "requested": "{n} review demandée | {n} reviews demandées",
     "threads": "{n} commentaire non résolu sur tes PR | {n} commentaires non résolus sur tes PR",
     "collapseAll": "Tout replier",
@@ -161,6 +161,12 @@
     "draftAlertTip": "Drafts : à rebaser avant de les passer en ready."
   },
   "card": {
+    "forMe": {
+      "approve": "À approuver",
+      "requested": "Review demandée",
+      "approveTip": "Tu l’as déjà reviewée : elle a reçu des commits depuis, ou ta review a été redemandée.",
+      "requestedTip": "Ta review est demandée et tu ne l’as encore jamais reviewée."
+    },
     "step1": "Position 1 : cible directement la base de la pile, à merger en premier",
     "stepN": "Position {n} : à merger après #{parent}, dont elle cible la branche",
     "conflict": "Conflit · rebase requis",
@@ -206,14 +212,15 @@
     "reviews": "Reviews",
     "since": "Depuis le dernier commit",
     "sinceTip": "Qui a reviewé le dernier commit, et dont la review est à refaire",
-    "comments": "Commentaires non résolus",
+    "comments": "Commentaires",
     "ci": "CI · màj",
     "redo": "{names} à refaire",
     "unresolvedTip": "Commentaires non résolus",
     "totalTip": "Commentaires au total",
     "step1": "Position 1 : à merger en premier",
     "stepN": "Position {n} dans la pile",
-    "updated": "Màj"
+    "updated": "Màj",
+    "commentsTip": "Non résolus / total"
   },
   "drawer": {
     "close": "Fermer",

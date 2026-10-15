@@ -106,7 +106,7 @@
       "tip": "PRs you authored."
     },
     "approve": {
-      "l": "To approve by me",
+      "l": "Awaiting my approval",
       "tip": "Other people's PRs you already reviewed that got commits after your review (or where your review was requested again)."
     },
     "requested": {
@@ -126,8 +126,8 @@
     "open": "{n} open PR | {n} open PRs",
     "stacks": "{n} stack | {n} stacks",
     "conflicts": "{n} in conflict",
-    "toApprove": "{n} to approve by you",
-    "toApproveTip": "PRs you reviewed that received commits since",
+    "toApprove": "{n} awaiting your approval",
+    "toApproveTip": "PRs you reviewed that received commits since, or where your review was requested again",
     "requested": "{n} review requested | {n} reviews requested",
     "threads": "{n} unresolved comment on your PRs | {n} unresolved comments on your PRs",
     "collapseAll": "Collapse all",
@@ -161,6 +161,12 @@
     "draftAlertTip": "Drafts: to rebase before they are marked ready."
   },
   "card": {
+    "forMe": {
+      "approve": "Needs approval",
+      "requested": "Review requested",
+      "approveTip": "You already reviewed it: it received commits since, or your review was requested again.",
+      "requestedTip": "Your review is requested and you never reviewed it."
+    },
     "step1": "Position 1: targets the stack base directly, merge first",
     "stepN": "Position {n}: merge after #{parent}, whose branch it targets",
     "conflict": "Conflict · rebase needed",
@@ -206,14 +212,15 @@
     "reviews": "Reviews",
     "since": "Since latest commit",
     "sinceTip": "Who reviewed the latest commit, and whose review needs redoing",
-    "comments": "Unresolved comments",
+    "comments": "Comments",
     "ci": "CI · updated",
     "redo": "{names} to redo",
     "unresolvedTip": "Unresolved comments",
     "totalTip": "Total comments",
     "step1": "Position 1: merge first",
     "stepN": "Position {n} in the stack",
-    "updated": "Updated"
+    "updated": "Updated",
+    "commentsTip": "Unresolved / total"
   },
   "drawer": {
     "close": "Close",
