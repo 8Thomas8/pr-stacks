@@ -32,9 +32,10 @@ function toggle(b: Band, e: MouseEvent) {
     <table class="list">
       <thead>
         <tr>
-          <th>{{ t('list.pr') }}</th><th>{{ t('list.status') }}</th><th>{{ t('list.labels') }}</th><th class="col-desc">{{ t('list.desc') }}</th><th>{{ t('list.author') }}</th><th>{{ t('list.reviews') }}</th>
-          <Tip :text="t('list.sinceTip')"><th>{{ t('list.since') }}</th></Tip>
-          <th>{{ t('list.comments') }}</th><th>{{ showCi ? t('list.ci') : t('list.updated') }}</th>
+          <th class="col-pr">{{ t('list.pr') }}</th><th class="col-st">{{ t('list.status') }}</th><th class="col-lbl">{{ t('list.labels') }}</th><th class="col-desc">{{ t('list.desc') }}</th><th class="col-au">{{ t('list.author') }}</th><th class="col-rev">{{ t('list.reviews') }}</th>
+          <Tip :text="t('list.sinceTip')"><th class="col-since">{{ t('list.since') }}</th></Tip>
+          <Tip :text="t('list.commentsTip')"><th class="col-com">{{ t('list.comments') }}<span class="sr-only"> ({{ t('list.commentsTip') }})</span></th></Tip>
+          <th class="col-num">{{ showCi ? t('list.ci') : t('list.updated') }}</th>
         </tr>
       </thead>
       <tbody v-for="b in visibleBands" :key="b.key" :class="{ collapsed: st.collapsed.has(b.key) }">
@@ -56,12 +57,12 @@ function toggle(b: Band, e: MouseEvent) {
         >
           <td>
             <div class="l-pr">
-              <span class="tree">{{ tree }}</span>
+              <span v-if="tree" class="tree">{{ tree }}</span>
               <Tip v-if="step" :text="step === 1 ? t('list.step1') : t('list.stepN', { n: step })"><span class="lstep">{{ step }}</span></Tip>
-              <div class="t"><b>{{ p.title }}</b><span><RepoLink :repo="p.repo" /><PrLink :pr="p" /> · {{ p.head }}</span></div>
+              <div class="t"><b :title="p.title">{{ p.title }}</b><span><RepoLink :repo="p.repo" /><PrLink :pr="p" /> · {{ p.head }}</span></div>
             </div>
           </td>
-          <td><StatusPill :status="p.status" style="margin:0" /></td>
+          <td><div class="l-st"><StatusPill :status="p.status" style="margin:0" /><ForMeTag :pr="p" /></div></td>
           <td><div class="labels"><LabelPill v-for="l in p.labels" :key="l" :name="l" /></div></td>
           <td class="l-desc col-desc"><PrDesc :body="p.body" /></td>
           <td><UserAvatar :login="p.author" /></td>

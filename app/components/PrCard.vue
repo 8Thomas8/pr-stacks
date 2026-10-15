@@ -40,6 +40,7 @@ const relKey = (r: Rel) => (r.k === 'behind' ? r.k : r.k === 'link' ? r.l.url : 
     @mouseleave="st.hover = null"
   >
     <Tip v-if="step" :text="stepTip"><span class="step">{{ step }}</span></Tip>
+    <ForMeTag :pr="p" />
     <header v-if="blocking(p)" class="c-top conf">
       <PrRef :pr="p" />
       <Tip>
