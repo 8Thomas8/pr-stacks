@@ -13,7 +13,7 @@ const num = (n: number) => n.toLocaleString(locale.value)
 </script>
 
 <template>
-  <aside class="rail">
+  <aside class="rail" :aria-label="t('rail.label')">
     <FoldSection k="rail:views" :title="t('rail.views')" :active="st.quick === 'all' ? 0 : 1">
       <div class="qv">
         <Tip v-for="x in QUICK" :key="x.k" :text="t(`quick.${x.k}.tip`)">
@@ -27,7 +27,7 @@ const num = (n: number) => n.toLocaleString(locale.value)
     <FoldSection k="rail:labels" :title="t('rail.labels')" :active="st.labels.size">
       <div class="chips">
         <Tip v-for="l in usedLabels" :key="l" :text="label(l).d || l">
-          <button class="chip" :aria-pressed="st.labels.has(l)" @click="toggle(st.labels, l)"><i class="ld" :style="{ background: label(l).c }"></i>{{ l }}</button>
+          <button class="chip" :aria-pressed="st.labels.has(l)" @click="toggle(st.labels, l)"><i class="ld" :style="{ background: label(l).c }"></i><span class="chip-t">{{ l }}</span></button>
         </Tip>
         <span v-if="!usedLabels.length" style="font-size:12.5px;color:var(--faint)">{{ t('rail.noLabels') }}</span>
       </div>
@@ -35,14 +35,14 @@ const num = (n: number) => n.toLocaleString(locale.value)
     <FoldSection k="rail:repos" :title="t('rail.repos')" :active="st.repos.size">
       <div class="chips">
         <Tip v-for="r in repos" :key="r.key" :text="r.slug">
-          <button class="chip plain" :aria-pressed="st.repos.has(r.key)" @click="toggle(st.repos, r.key)">{{ r.key }}</button>
+          <button class="chip plain" :aria-pressed="st.repos.has(r.key)" @click="toggle(st.repos, r.key)"><span class="chip-t">{{ r.key }}</span></button>
         </Tip>
       </div>
     </FoldSection>
     <FoldSection k="rail:authors" :title="t('rail.authors')" :active="st.authors.size">
       <div class="chips">
         <button v-for="a in authors" :key="a" class="chip" :aria-pressed="st.authors.has(a)" @click="toggle(st.authors, a)">
-          <UserAvatar :login="a" />{{ person(a).n }}
+          <UserAvatar :login="a" /><span class="chip-t">{{ person(a).n }}</span>
         </button>
       </div>
     </FoldSection>
@@ -62,7 +62,7 @@ const num = (n: number) => n.toLocaleString(locale.value)
       </Tip>
     </label>
     <Tip v-if="rate" :text="t('rail.rateTip', { repos: t('n.repos', repos.length), points: t('n.points', cost) })">
-      <div class="rate">
+      <div class="rate" tabindex="0">
         {{ t('rail.rate', { remaining: num(rate.remaining), limit: num(rate.limit) }) }}
         <div class="meter"><i :style="{ width: `${(rate.remaining / rate.limit) * 100}%` }"></i></div>
       </div>

@@ -15,7 +15,7 @@ const bar = ref<HTMLElement>()
 let ro: ResizeObserver | undefined
 onMounted(() => {
   ro = new ResizeObserver(() => document.documentElement.style.setProperty('--bar-h', `${bar.value!.getBoundingClientRect().bottom}px`))
-  ro.observe(bar.value!)
+  ro.observe(bar.value!, { box: 'border-box' })
 })
 onBeforeUnmount(() => ro?.disconnect())
 const sub = computed(() => (st.mode === 'auto' ? t('toolbar.next', { n: `${Math.floor(st.countdown / 60)}:${String(st.countdown % 60).padStart(2, '0')}` }) : t('toolbar.sub', { repos: t('n.repos', repos.value.length) })))

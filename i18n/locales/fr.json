@@ -94,7 +94,8 @@
       "requested": "Review demandée, pas faite",
       "stale": "2 commits depuis sa review"
     },
-    "activeFilters": "filtre actif | filtres actifs"
+    "activeFilters": "filtre actif | filtres actifs",
+    "label": "Filtres"
   },
   "quick": {
     "all": {
