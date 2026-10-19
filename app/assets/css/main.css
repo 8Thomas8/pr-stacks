@@ -222,12 +222,13 @@ kbd { font: 500 11px/1 var(--f-mono); color: var(--faint); border: 1px solid var
 .card.conflict { border: 1.5px solid var(--bad); background: var(--bad-soft); animation: alarm 2.6s ease-in-out infinite; }
 .card.conflict .av { box-shadow: 0 0 0 2px var(--foot); }
 .card.conflict:hover { border-color: var(--bad); }
-.card.pulse-review { border: 2px solid var(--violet); animation: pulseV 1.8s ease-in-out infinite; }
+.card.pulse-review { border-color: var(--violet); animation: pulseV 1.8s ease-in-out infinite; }
 .card.pulse-review:hover { border-color: var(--violet); }
 .card.pulse-changes { border: 1.5px solid var(--warn); animation: pulseW 2.2s ease-in-out infinite; }
-@keyframes pulseV { 0%, 100% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--violet) 22%, transparent), var(--shadow); } 50% { box-shadow: 0 0 0 9px color-mix(in srgb, var(--violet) 38%, transparent), var(--shadow); } }
+@keyframes pulseV { 0%, 100% { box-shadow: inset 0 0 0 1px var(--violet), 0 0 0 3px color-mix(in srgb, var(--violet) 22%, transparent), var(--shadow); } 50% { box-shadow: inset 0 0 0 1px var(--violet), 0 0 0 9px color-mix(in srgb, var(--violet) 38%, transparent), var(--shadow); } }
 @keyframes pulseW { 0%, 100% { box-shadow: 0 0 0 0 transparent, var(--shadow); } 50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--warn) 32%, transparent), var(--shadow); } }
 .forme { display: inline-flex; align-items: center; gap: 5px; font: 700 11px/1 var(--f-body); letter-spacing: .02em; white-space: nowrap; color: var(--on-solid); background: var(--violet); padding: 5px 9px 5px 7px; border-radius: 99px; animation: tagV 1.8s ease-out infinite; }
+.forme.still { animation: none; }
 .forme svg.i { width: 13px; height: 13px; }
 @keyframes tagV { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--violet) 60%, transparent); } 70%, 100% { box-shadow: 0 0 0 7px transparent; } }
 .card > .forme { position: absolute; top: 0; left: 22px; z-index: 2; transform: translateY(-50%); }

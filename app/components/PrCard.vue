@@ -3,7 +3,7 @@ import type { PullRequest } from '#shared/types/pr'
 import type { Rel } from '~/utils/stacks'
 
 const props = defineProps<{ pr: PullRequest, step?: number, parent?: PullRequest, abs?: { x: number, y: number }, delay: number }>()
-const { st, lean, matches, pulseClass, byId, blocks, blocking } = useStacks()
+const { st, lean, matches, pulseClass, hoverSeen, byId, blocks, blocking } = useStacks()
 const { t } = useI18n()
 const open = (id: string) => {
   st.sel = id
@@ -38,6 +38,7 @@ const relKey = (r: Rel) => (r.k === 'behind' ? r.k : r.k === 'link' ? r.l.url : 
     @keydown.enter.self="open(p.id)"
     @mouseenter="st.hover = p.id"
     @mouseleave="st.hover = null"
+    @pointermove="hoverSeen(p.id, $event)"
   >
     <Tip v-if="step" :text="stepTip"><span class="step">{{ step }}</span></Tip>
     <ForMeTag :pr="p" />

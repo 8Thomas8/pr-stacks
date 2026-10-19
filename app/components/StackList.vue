@@ -2,7 +2,7 @@
 import type { PullRequest } from '#shared/types/pr'
 import type { Band } from '~/utils/stacks'
 
-const { st, visibleBands, forest, matches, pulseClass, submitted, person, setCollapsed, showCi, blocking } = useStacks()
+const { st, visibleBands, forest, matches, pulseClass, hoverSeen, submitted, person, setCollapsed, showCi, blocking } = useStacks()
 const { t, rel } = useFmt()
 
 function rows(b: Band) {
@@ -54,6 +54,7 @@ function toggle(b: Band, e: MouseEvent) {
           class="row"
           :class="[{ 'conflict': blocking(p), 'draft': p.draft, 'draft-conflict': p.draft && p.conflict, 'flash': st.changed.has(p.id) }, pulseClass(p)]"
           @click="st.sel = p.id"
+          @pointermove="hoverSeen(p.id, $event)"
         >
           <td>
             <div class="l-pr">

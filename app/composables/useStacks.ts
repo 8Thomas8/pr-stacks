@@ -50,6 +50,7 @@ const st = reactive({
   hover: null as string | null,
   collapsed: new Set<string>(JSON.parse(ls.get('stacks-collapsed') || '[]') as string[]),
   folded: new Set<string>(JSON.parse(ls.get('stacks-folded') || '[]') as string[]),
+  seen: new Map<string, string>(Object.entries(JSON.parse(ls.get('stacks-seen') || '{}') as Record<string, string>)),
   changed: new Set<string>(),
   popAv: new Set<string>(),
   lastSync: 0,
@@ -97,11 +98,31 @@ const reviewRequested = (p: PullRequest) => !p.draft && p.author !== me.value &&
 const blocking = (p: PullRequest) => p.conflict && !p.draft
 const blocks = (p: PullRequest) => prs.value.filter(o => o.dependsOn.includes(p.id))
 const forMe = (p: PullRequest) => (toApproveByMe(p) ? 'approve' : reviewRequested(p) ? 'requested' : null)
-function pulseClass(p: PullRequest) {
+function rawPulse(p: PullRequest) {
   if (p.conflict || p.draft) return ''
   if (forMe(p)) return 'pulse-review'
   if (p.status === 'changes') return 'pulse-changes'
   return ''
+}
+function pulseKey(p: PullRequest, cls: string) {
+  if (cls === 'pulse-changes') return JSON.stringify([cls, p.headOid, p.reviews.filter(r => r.s === 'CHANGES_REQUESTED').map(r => r.by)])
+  const kind = forMe(p)
+  const mine = p.reviews.find(r => r.by === me.value)
+  return JSON.stringify([kind, kind === 'approve' && p.headOid, mine?.s, !!mine?.rerequested])
+}
+function pulseClass(p: PullRequest) {
+  const cls = rawPulse(p)
+  return cls && st.seen.get(p.id) !== pulseKey(p, cls) ? cls : ''
+}
+const saveSeen = () => ls.set('stacks-seen', JSON.stringify(Object.fromEntries(st.seen)))
+function markSeen(id: string) {
+  const p = byId(id)
+  if (!p || !pulseClass(p)) return
+  st.seen.set(id, pulseKey(p, rawPulse(p)))
+  saveSeen()
+}
+function hoverSeen(id: string, e: PointerEvent) {
+  if (e.movementX || e.movementY) markSeen(id)
 }
 function pathHas(fromId: string | null, id: string) {
   let c = fromId ? byId(fromId) : undefined
@@ -234,6 +255,11 @@ async function refresh({ silent = false } = {}) {
       }, 1600)
     }
     if (st.sel && !byId(st.sel)) st.sel = null
+    const gone = [...st.seen.keys()].filter(id => !byId(id))
+    if (gone.length) {
+      gone.forEach(id => st.seen.delete(id))
+      saveSeen()
+    }
   }
   catch (e) {
     const msg = (e as Error).message
@@ -294,6 +320,9 @@ function start(translate: Translate) {
   t = translate
   if (started) return
   started = true
+  watchEffect(() => {
+    if (st.sel) markSeen(st.sel)
+  })
   refresh()
   setInterval(() => {
     st.now = Date.now()
@@ -310,7 +339,7 @@ function start(translate: Translate) {
 export function useStacks() {
   return {
     st, snap, prs, me, repos, forest, visibleBands, QUICK, every,
-    person, byId, submitted, sinceLastReview, toApproveByMe, reviewRequested, forMe, blocking, blocks, pulseClass, pathHas, matches,
+    person, byId, submitted, sinceLastReview, toApproveByMe, reviewRequested, forMe, blocking, blocks, pulseClass, hoverSeen, pathHas, matches,
     toast, dropToast, setCollapsed, setAllFolded, setFolded, refresh, setMode, setCi, setAutoS, setDensity, setView, start, useTranslate, setSettings,
     lean,
     ls,
