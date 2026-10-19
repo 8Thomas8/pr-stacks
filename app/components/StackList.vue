@@ -3,7 +3,7 @@ import type { PullRequest } from '#shared/types/pr'
 import type { Band } from '~/utils/stacks'
 
 const { st, visibleBands, forest, matches, pulseClass, hoverSeen, submitted, person, setCollapsed, showCi, blocking } = useStacks()
-const { t, rel } = useFmt()
+const { t, rel, fmtFull } = useFmt()
 
 function rows(b: Band) {
   const out: { p: PullRequest, tree: string, step?: number }[] = []
@@ -35,12 +35,13 @@ function toggle(b: Band, e: MouseEvent) {
           <th class="col-pr">{{ t('list.pr') }}</th><th class="col-st">{{ t('list.status') }}</th><th class="col-lbl">{{ t('list.labels') }}</th><th class="col-desc">{{ t('list.desc') }}</th><th class="col-au">{{ t('list.author') }}</th><th class="col-rev">{{ t('list.reviews') }}</th>
           <Tip :text="t('list.sinceTip')"><th class="col-since">{{ t('list.since') }}</th></Tip>
           <Tip :text="t('list.commentsTip')"><th class="col-com">{{ t('list.comments') }}<span class="sr-only"> ({{ t('list.commentsTip') }})</span></th></Tip>
+          <th class="col-open">{{ t('list.opened') }}</th>
           <th class="col-num">{{ showCi ? t('list.ci') : t('list.updated') }}</th>
         </tr>
       </thead>
       <tbody v-for="b in visibleBands" :key="b.key" :class="{ collapsed: st.collapsed.has(b.key) }">
         <tr class="grp" data-fold-area @click="toggle(b, $event)">
-          <td colspan="9">
+          <td colspan="10">
             <div class="grp-row">
               <FoldButton :open="!st.collapsed.has(b.key)" />
               <BandBadges :band="b" />
@@ -78,8 +79,13 @@ function toggle(b: Band, e: MouseEvent) {
             {{ ' ' }}<Tip :text="t('list.totalTip')"><span class="num z">/ {{ p.comments }}</span></Tip>
           </td>
           <td>
-            <Tip v-if="showCi" :text="t(`ci.tip.${p.ci}`)"><span class="num z"><i class="ci" :class="p.ci"></i> {{ rel(p.updatedAt, st.now) }}</span></Tip>
-            <span v-else class="num z">{{ rel(p.updatedAt, st.now) }}</span>
+            <Tip :text="t('dates.created', { at: fmtFull(p.createdAt) })"><time class="num z wrap" :datetime="p.createdAt">{{ rel(p.createdAt, st.now) }}</time></Tip>
+          </td>
+          <td>
+            <Tip>
+              <span class="num z"><i v-if="showCi" class="ci" :class="p.ci"></i> <time :datetime="p.updatedAt">{{ rel(p.updatedAt, st.now) }}</time></span>
+              <template #content><template v-if="showCi">{{ t(`ci.tip.${p.ci}`) }}<br /></template>{{ t('dates.updated', { at: fmtFull(p.updatedAt) }) }}</template>
+            </Tip>
           </td>
         </tr>
       </tbody>

@@ -17,6 +17,7 @@ const PATHS = {
   search: '<circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14"/>',
   graph: '<circle cx="3.5" cy="3.5" r="1.8"/><circle cx="3.5" cy="12.5" r="1.8"/><circle cx="12.5" cy="8" r="1.8"/><path d="M3.5 5.3v5.4M5.3 3.5c3 0 3.7 4.5 5.4 4.5"/>',
   list: '<path d="M2.5 4h11M2.5 8h11M2.5 12h11"/>',
+  clock: '<circle cx="8" cy="8" r="5.8"/><path d="M8 4.8V8l2.2 1.6"/>',
   refresh: '<path d="M13.5 6A5.8 5.8 0 0 0 3 4.6L2 6M2.5 10A5.8 5.8 0 0 0 13 11.4l1-1.4"/><path d="M2 2.5V6h3.5M14 13.5V10h-3.5"/>',
   system: '<rect x="2" y="3" width="12" height="8" rx="1.5"/><path d="M6 14h4M8 11v3"/>',
   light: '<circle cx="8" cy="8" r="3"/><path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5M3.4 3.4l1 1M11.6 11.6l1 1M12.6 3.4l-1 1M4.4 11.6l-1 1"/>',

@@ -53,6 +53,14 @@
     "h": "{n} h",
     "d": "{n} j"
   },
+  "dates": {
+    "opened": "ouverte il y a {ago}",
+    "openedNow": "ouverte à l’instant",
+    "updatedAgo": "màj il y a {ago}",
+    "updatedNow": "màj à l’instant",
+    "created": "Créée le {at}",
+    "updated": "Dernière activité le {at}"
+  },
   "toolbar": {
     "views": "Vue",
     "graph": "Piles",
@@ -221,6 +229,7 @@
     "step1": "Position 1 : à merger en premier",
     "stepN": "Position {n} dans la pile",
     "updated": "Màj",
+    "opened": "Ouverte",
     "commentsTip": "Non résolus / total"
   },
   "drawer": {
@@ -228,8 +237,6 @@
     "closeTip": "Fermer (Échap)",
     "baseBranch": "Branche de base",
     "headBranch": "Branche de la PR",
-    "byline": "{name} · màj il y a {ago}",
-    "bylineNow": "{name} · màj à l’instant",
     "conflictTitle": "Conflit avec {base}.",
     "conflictText": "GitHub ne peut pas merger cette branche. Rebase sur la base puis repousse.",
     "desc": "Description",

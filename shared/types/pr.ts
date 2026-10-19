@@ -35,6 +35,7 @@ export interface PullRequest {
   mergeable: string
   status: PrStatus
   ci: CiState
+  createdAt: string
   updatedAt: string
   labels: string[]
   reviews: Review[]
