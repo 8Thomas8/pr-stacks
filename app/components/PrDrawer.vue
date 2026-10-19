@@ -3,7 +3,7 @@ import { DialogClose, DialogContent, DialogDescription, DialogOverlay, DialogPor
 import type { LinkedPr, PullRequest, Review } from '#shared/types/pr'
 
 const { st, byId, forest, submitted, sinceLastReview, blocks, person, toast, showCi } = useStacks()
-const { t, commits, fmtAt, rel } = useFmt()
+const { t, commits, fmtAt, fmtFull, since } = useFmt()
 
 const last = shallowRef<PullRequest>()
 const p = computed(() => (st.sel ? byId(st.sel) : undefined) ?? last.value)
@@ -81,7 +81,9 @@ function copyBranch() {
           </div>
           <div v-if="p.labels.length" class="labels"><LabelPill v-for="l in p.labels" :key="l" :name="l" /></div>
           <DialogDescription as="div" class="row" style="font-size:12.5px;color:var(--muted)">
-            <UserAvatar :login="p.author" /><span>{{ st.now - Date.parse(p.updatedAt) < 60e3 ? t('drawer.bylineNow', { name: person(p.author).n }) : t('drawer.byline', { name: person(p.author).n, ago: rel(p.updatedAt, st.now) }) }}</span>
+            <UserAvatar :login="p.author" /><span>{{ person(p.author).n }}</span>·
+            <Tip :text="t('dates.created', { at: fmtFull(p.createdAt) })"><time :datetime="p.createdAt">{{ since('opened', p.createdAt, st.now) }}</time></Tip>·
+            <Tip :text="t('dates.updated', { at: fmtFull(p.updatedAt) })"><time :datetime="p.updatedAt">{{ since('updated', p.updatedAt, st.now) }}</time></Tip>
           </DialogDescription>
           <div v-if="p.conflict" class="d-conf">
             <Icon name="conflict" /><span><b>{{ t('drawer.conflictTitle', { base: p.base }) }}</b> {{ t('drawer.conflictText') }}</span>

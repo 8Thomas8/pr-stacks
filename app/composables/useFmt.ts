@@ -1,3 +1,5 @@
+const fullFmts = new Map<string, Intl.DateTimeFormat>()
+
 export function useFmt() {
   const { t, locale } = useI18n()
   const commits = (n: number) => t('n.commits', n)
@@ -9,6 +11,11 @@ export function useFmt() {
     }
     return d.toLocaleDateString(locale.value, { day: 'numeric', month: 'short' })
   }
+  function fmtFull(iso: string) {
+    let f = fullFmts.get(locale.value)
+    if (!f) fullFmts.set(locale.value, f = new Intl.DateTimeFormat(locale.value, { dateStyle: 'full', timeStyle: 'short' }))
+    return f.format(new Date(iso))
+  }
   function rel(iso: string, now = Date.now()) {
     const s = Math.max(0, (now - Date.parse(iso)) / 1000)
     if (s < 60) return t('time.now')
@@ -16,5 +23,7 @@ export function useFmt() {
     if (s < 86400) return t('time.h', { n: Math.floor(s / 3600) })
     return t('time.d', { n: Math.floor(s / 86400) })
   }
-  return { t, locale, commits, fmtAt, rel }
+  const since = (kind: 'opened' | 'updated', iso: string, now = Date.now()) =>
+    now - Date.parse(iso) < 60e3 ? t(`dates.${kind}Now`) : t(kind === 'opened' ? 'dates.opened' : 'dates.updatedAgo', { ago: rel(iso, now) })
+  return { t, locale, commits, fmtAt, fmtFull, rel, since }
 }

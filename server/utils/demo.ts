@@ -136,11 +136,12 @@ export function demoSnapshot({ ci, approvals, fresh }: Pick<SyncOptions, 'ci' | 
       ? 'draft'
       : s.conflict ? 'conflict' : reviews.some(r => r.s === 'CHANGES_REQUESTED') ? 'changes' : ok >= approvals ? 'approved' : 'review'
     const n = s.commits.length
+    const oldest = Math.max(s.updated + n * 5, ...reviews.filter(r => r.at).map(r => (Date.now() - Date.parse(r.at!)) / H))
     return {
       id: `${s.repo}#${s.num}`, repo: s.repo, slug: `acme/${s.repo}`, num: s.num, url: `https://github.com/acme/${s.repo}/pull/${s.num}`,
       author: s.author, title: s.title, body: s.body, draft: !!s.draft,
       head: s.head, base: s.base, headOid: sha(s.num, n), conflict: !!s.conflict, behind: !!s.behind, mergeable: s.conflict ? 'CONFLICTING' : 'MERGEABLE',
-      status, ci: ci ? s.ci ?? 'none' : 'none', updatedAt: ago(s.updated), labels: s.labels ?? [], reviews,
+      status, ci: ci ? s.ci ?? 'none' : 'none', createdAt: ago(oldest + 3), updatedAt: ago(s.updated), labels: s.labels ?? [], reviews,
       commits: s.commits.map((m, i) => [sha(s.num, i), m, ago(s.updated + (n - i) * 5)]), commitCount: n,
       threads: (s.threads ?? []).map((t, i) => ({ ...t, id: `${s.repo}#${s.num}/${i}` })), comments: (s.comments ?? 0) + (s.threads?.length ?? 0),
       dependsOn: s.dependsOn ?? [], links: s.links ?? [],

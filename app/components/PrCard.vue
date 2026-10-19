@@ -4,7 +4,7 @@ import type { Rel } from '~/utils/stacks'
 
 const props = defineProps<{ pr: PullRequest, step?: number, parent?: PullRequest, abs?: { x: number, y: number }, delay: number }>()
 const { st, lean, matches, pulseClass, hoverSeen, byId, blocks, blocking } = useStacks()
-const { t } = useI18n()
+const { t, fmtFull, since } = useFmt()
 const open = (id: string) => {
   st.sel = id
 }
@@ -69,6 +69,10 @@ const relKey = (r: Rel) => (r.k === 'behind' ? r.k : r.k === 'link' ? r.l.url : 
         <AuthorChip :login="p.author" />
         <CardLabels v-if="p.labels.length" :labels="p.labels" />
       </div>
+      <Tip>
+        <div class="c-dates"><Icon name="clock" /><time :datetime="p.createdAt">{{ since('opened', p.createdAt, st.now) }}</time> · <time :datetime="p.updatedAt">{{ since('updated', p.updatedAt, st.now) }}</time></div>
+        <template #content>{{ t('dates.created', { at: fmtFull(p.createdAt) }) }}<br />{{ t('dates.updated', { at: fmtFull(p.updatedAt) }) }}</template>
+      </Tip>
       <PrDesc v-if="!lean" :body="p.body" />
       <div v-if="!lean && rels.length" class="notes">
         <template v-for="r in shown" :key="relKey(r)">

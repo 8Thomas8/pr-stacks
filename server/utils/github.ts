@@ -31,7 +31,7 @@ function gh<T>(args: string[], { partial = false } = {}): Promise<T> {
 }
 
 const prFields = (ci: boolean) => `
-  number title body url isDraft updatedAt headRefName headRefOid baseRefName mergeable mergeStateStatus reviewDecision
+  number title body url isDraft createdAt updatedAt headRefName headRefOid baseRefName mergeable mergeStateStatus reviewDecision
   author { login avatarUrl ... on User { name } }
   labels(first: 20) { nodes { name color description } }
   comments { totalCount }
@@ -62,6 +62,7 @@ interface GhPr {
   body: string
   url: string
   isDraft: boolean
+  createdAt: string
   updatedAt: string
   headRefName: string
   headRefOid: string
@@ -187,7 +188,7 @@ function normalize(repos: RepoData[], { approvals, fresh }: Pick<SyncOptions, 'a
         head: n.headRefName, base: n.baseRefName, headOid: n.headRefOid,
         conflict: n.mergeable === 'CONFLICTING', behind: n.mergeStateStatus === 'BEHIND', mergeable: n.mergeable,
         status, ci: CI[rollup?.state ?? ''] || 'none',
-        updatedAt: n.updatedAt, labels: n.labels.nodes.map(l => l.name), reviews,
+        createdAt: n.createdAt, updatedAt: n.updatedAt, labels: n.labels.nodes.map(l => l.name), reviews,
         commits: commits.map(c => [c.abbreviatedOid, c.messageHeadline, c.committedDate]), commitCount: n.commits.totalCount,
         threads, comments: n.comments.totalCount + threadComments, dependsOn: [], links: [],
       })
