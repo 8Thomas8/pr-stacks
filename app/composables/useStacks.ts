@@ -3,7 +3,7 @@ import type { Person, PullRequest, Snapshot, SyncSettings } from '#shared/types/
 type Translate = ReturnType<typeof useI18n>['t']
 
 export type Density = 'comfortable' | 'compact' | 'ultra'
-export type QuickKey = 'all' | 'mine' | 'approve' | 'requested' | 'conflict' | 'changes'
+export type QuickKey = 'all' | 'new' | 'mine' | 'approve' | 'requested' | 'conflict' | 'changes'
 export type ToastKind = 'ok' | 'error' | 'info'
 export interface Toast { id: number, msg: string, sub?: string, kind: ToastKind }
 export interface Avatar extends Person { i: string, h: number }
@@ -50,6 +50,7 @@ const st = reactive({
   hover: null as string | null,
   collapsed: new Set<string>(JSON.parse(ls.get('stacks-collapsed') || '[]') as string[]),
   folded: new Set<string>(JSON.parse(ls.get('stacks-folded') || '[]') as string[]),
+  kept: new Set<string>(),
   seen: new Map<string, string>(Object.entries(JSON.parse(ls.get('stacks-seen') || '{}') as Record<string, string>)),
   changed: new Set<string>(),
   popAv: new Set<string>(),
@@ -118,6 +119,7 @@ const saveSeen = () => ls.set('stacks-seen', JSON.stringify(Object.fromEntries(s
 function markSeen(id: string) {
   const p = byId(id)
   if (!p || !pulseClass(p)) return
+  if (st.quick === 'new') st.kept.add(id)
   st.seen.set(id, pulseKey(p, rawPulse(p)))
   saveSeen()
 }
@@ -135,6 +137,7 @@ function pathHas(fromId: string | null, id: string) {
 
 const QUICK: { k: QuickKey, f: (p: PullRequest) => boolean, c: string, hot?: boolean }[] = [
   { k: 'all', f: () => true, c: 'var(--line-strong)' },
+  { k: 'new', f: p => !!pulseClass(p), c: 'var(--violet)', hot: true },
   { k: 'mine', f: p => p.author === me.value, c: 'var(--accent)' },
   { k: 'approve', f: toApproveByMe, c: 'var(--violet)', hot: true },
   { k: 'requested', f: reviewRequested, c: 'var(--accent-ink)' },
@@ -143,7 +146,7 @@ const QUICK: { k: QuickKey, f: (p: PullRequest) => boolean, c: string, hot?: boo
 ]
 
 function matches(p: PullRequest) {
-  if (!QUICK.find(x => x.k === st.quick)!.f(p)) return false
+  if (!QUICK.find(x => x.k === st.quick)!.f(p) && !st.kept.has(p.id)) return false
   if (st.repos.size && !st.repos.has(p.repo)) return false
   if (st.authors.size && !st.authors.has(p.author)) return false
   if (st.labels.size && !p.labels.some(l => st.labels.has(l))) return false
@@ -323,6 +326,7 @@ function start(translate: Translate) {
   watchEffect(() => {
     if (st.sel) markSeen(st.sel)
   })
+  watch(() => st.quick, () => st.kept.clear())
   refresh()
   setInterval(() => {
     st.now = Date.now()

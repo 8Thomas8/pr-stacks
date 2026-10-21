@@ -110,6 +110,10 @@
       "l": "Toutes les PR",
       "tip": "Toutes les PR ouvertes des dépôts suivis."
     },
+    "new": {
+      "l": "Nouveautés",
+      "tip": "PR encore surlignées parce qu’elles demandent ton attention (review à faire, changements demandés). Celles que tu survoles ou ouvres ici restent listées jusqu’à ce que tu quittes cette vue."
+    },
     "mine": {
       "l": "Mes PR",
       "tip": "Les PR dont tu es l’auteur."

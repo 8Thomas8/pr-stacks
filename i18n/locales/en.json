@@ -110,6 +110,10 @@
       "l": "All PRs",
       "tip": "All open PRs in the tracked repositories."
     },
+    "new": {
+      "l": "New",
+      "tip": "PRs still highlighted because they need your attention (review to do, changes requested). The ones you hover or open here stay listed until you leave this view."
+    },
     "mine": {
       "l": "My PRs",
       "tip": "PRs you authored."
