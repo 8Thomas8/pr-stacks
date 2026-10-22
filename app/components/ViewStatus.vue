@@ -1,13 +1,20 @@
 <script setup lang="ts">
-const { st, snap, prs } = useStacks()
+const { st, snap, prs, openPrefs } = useStacks()
+const { ds } = useDesktop()
 const { t } = useI18n()
+const ghBroken = computed(() => ds.gh && ds.gh.state !== 'ok')
 </script>
 
 <template>
   <div v-if="st.loadError === 'no-repos'" class="empty setup">
     <b>{{ t('state.noRepos') }}</b>
     <span>{{ t('state.noReposHint') }}</span>
-    <button class="btn primary" @click="st.settingsOpen = true">{{ t('options.settings') }}</button>
+    <button class="btn primary" @click="openPrefs('repos')">{{ t('options.settings') }}</button>
+  </div>
+  <div v-else-if="st.loadError && !snap && ghBroken" class="empty setup">
+    <b>{{ t(`gh.state.${ds.gh!.state}`) }}</b>
+    <span>{{ t('gh.needed') }}</span>
+    <button class="btn primary" @click="openPrefs('github')"><Icon name="terminal" />{{ t('gh.setup') }}</button>
   </div>
   <div v-else-if="st.loadError && !snap" class="err">
     <b>{{ t('state.loadFailed') }}</b>

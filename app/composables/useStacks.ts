@@ -7,6 +7,7 @@ export type QuickKey = 'all' | 'new' | 'mine' | 'approve' | 'requested' | 'confl
 export type ToastKind = 'ok' | 'error' | 'info'
 export interface Toast { id: number, msg: string, sub?: string, kind: ToastKind }
 export interface Avatar extends Person { i: string, h: number }
+export type PrefsTab = 'general' | 'repos' | 'sync' | 'notifications' | 'app' | 'github'
 
 export const AUTO_CHOICES = [30, 60, 120, 300, 600]
 const ls = {
@@ -72,7 +73,8 @@ const st = reactive({
   now: Date.now(),
   toasts: [] as Toast[],
   settings: readSettings(),
-  settingsOpen: false,
+  prefsOpen: false,
+  prefsTab: 'general' as PrefsTab,
 })
 st.countdown = st.autoS
 
@@ -366,21 +368,23 @@ function start(translate: Translate) {
   refresh()
   setInterval(() => {
     st.now = Date.now()
-    if (st.mode === 'auto' && !document.hidden && !st.refreshing) {
+    // keeps ticking while the window sits in the tray, so notifications still arrive
+    if (st.mode === 'auto' && !st.refreshing) {
       st.countdown--
       if (st.countdown <= 0) refresh({ silent: true })
     }
   }, 1000)
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && st.mode === 'auto' && Date.now() - st.lastSync > st.autoS * 1000) refresh({ silent: true })
-  })
+}
+function openPrefs(tab: PrefsTab = 'general') {
+  st.prefsTab = tab
+  st.prefsOpen = true
 }
 
 export function useStacks() {
   return {
     st, snap, prs, me, repos, tree, forest, visibleBands, QUICK, every,
     person, byId, submitted, sinceLastReview, toApproveByMe, reviewRequested, forMe, blocking, blocks, pulseClass, hoverSeen, pathHas, matches,
-    toast, dropToast, setCollapsed, setAllFolded, setFocus, setFolded, refresh, setMode, setCi, setAutoS, setDensity, setView, start, useTranslate, setSettings,
+    toast, dropToast, setCollapsed, setAllFolded, setFocus, setFolded, refresh, setMode, setCi, setAutoS, setDensity, setView, start, useTranslate, setSettings, openPrefs,
     lean,
     ls,
     showCi: computed(() => !!snap.value?.ci),

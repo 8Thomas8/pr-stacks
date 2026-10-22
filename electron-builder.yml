@@ -1,0 +1,58 @@
+# Installers for the three desktop platforms. Built in CI by .github/workflows/release.yml,
+# locally with `npm run dist` (only for the current OS).
+appId: io.github.8thomas8.prstacks
+productName: PR Stacks
+copyright: Copyright © Thomas Rousseau
+artifactName: pr-stacks-${version}-${os}-${arch}.${ext}
+directories:
+  output: dist
+  buildResources: build
+# Nitro bundles the app and its server dependencies into .output/, nothing else has to ship.
+files:
+  - electron/**
+  - "!electron/nitro-entry.ts"
+  - .output/**
+  - "!**/*.map"
+  - package.json
+# Locks the installed app down: no ELECTRON_RUN_AS_NODE, NODE_OPTIONS or --inspect, and only the
+# app.asar it shipped with (checked against its hash on macOS and Windows). Flipped before signing.
+electronFuses:
+  runAsNode: false
+  enableCookieEncryption: true
+  enableNodeOptionsEnvironmentVariable: false
+  enableNodeCliInspectArguments: false
+  enableEmbeddedAsarIntegrityValidation: true
+  onlyLoadAppFromAsar: true
+  grantFileProtocolExtraPrivileges: false
+# no auto-update channel: releases are downloaded from GitHub
+publish: null
+mac:
+  category: public.app-category.developer-tools
+  target:
+    - target: dmg
+      arch: [arm64, x64]
+    - target: zip
+      arch: [arm64, x64]
+  # no Apple Developer ID yet: ad-hoc signature so Apple Silicon accepts to run it
+  identity: "-"
+dmg:
+  writeUpdateInfo: false
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  differentialPackage: false
+linux:
+  category: Development
+  icon: build/icons
+  synopsis: Stacked GitHub pull requests at a glance
+  target:
+    - target: AppImage
+      arch: [x64]
+    - target: deb
+      arch: [x64]
+  syncDesktopName: true
