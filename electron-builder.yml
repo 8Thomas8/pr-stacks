@@ -31,8 +31,6 @@ mac:
   target:
     - target: dmg
       arch: [arm64, x64]
-    - target: zip
-      arch: [arm64, x64]
   # no Apple Developer ID yet: ad-hoc signature so Apple Silicon accepts to run it
   identity: "-"
 dmg:
@@ -56,3 +54,5 @@ linux:
     - target: deb
       arch: [x64]
   syncDesktopName: true
+deb:
+  packageCategory: devel

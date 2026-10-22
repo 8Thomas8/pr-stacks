@@ -21,3 +21,5 @@ jobs:
       - run: npm run check:locales
       - run: npm run typecheck
       - run: npm run build
+      # catches electron-builder config or icon mistakes before a release is tagged
+      - run: npx electron-builder --linux dir --publish never

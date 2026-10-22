@@ -32,7 +32,7 @@ Download the installer for your system from the [latest release](https://github.
 | macOS | `.dmg`, `arm64` for Apple Silicon, `x64` for Intel |
 | Linux | `.AppImage` (any distro) or `.deb` (Debian, Ubuntu) |
 
-The builds are not signed yet. On Windows, SmartScreen asks to confirm ("More info" → "Run anyway"). On macOS, right-click the app → Open the first time, or run `xattr -cr "/Applications/PR Stacks.app"`.
+The builds are not signed yet. On Windows, SmartScreen asks to confirm ("More info" → "Run anyway"). On macOS (12+), open the app once, then System Settings → Privacy & Security → "Open Anyway" (right-click → Open is enough before macOS 15), or run `xattr -cr "/Applications/PR Stacks.app"`. The AppImage needs `libfuse2` on Ubuntu 22.04+.
 
 You also need [`gh`](https://cli.github.com/) logged in (`gh auth login`) with read access to the repos. The `gh` badge in the toolbar shows whether it is installed and signed in, and Preferences → GitHub CLI walks you through it otherwise.
 
@@ -61,7 +61,7 @@ npm run icons      # regenerate the PNG icons from build/icon.svg and build/tray
 
 ### Releases
 
-[release-please](https://github.com/googleapis/release-please) keeps a release PR open from the [conventional commits](https://www.conventionalcommits.org/) merged on `master` (version bump + `CHANGELOG.md`). Merging it creates the tag and the GitHub release; the Release workflow then builds the installers on Linux, Windows and macOS and attaches them to it. To rebuild the installers of an existing release, run the Release workflow by hand with its tag.
+[release-please](https://github.com/googleapis/release-please) keeps a release PR open from the [conventional commits](https://www.conventionalcommits.org/) merged on `master` (version bump + `CHANGELOG.md`). Merging it creates the tag and a draft GitHub release; the Release workflow then builds the installers on Linux, Windows and macOS, attaches them and publishes the release. If one OS fails the release stays in draft: once fixed, run the Release workflow by hand with the tag. PRs are squash-merged, so their title is what release-please reads: give it a conventional prefix (`feat:`, `fix:`…). The repo setting Actions → General → "Allow GitHub Actions to create and approve pull requests" must stay on. Running it by hand with a tag also rebuilds the installers of an existing release.
 
 ## Notes
 
