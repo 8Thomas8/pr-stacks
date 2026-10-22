@@ -124,6 +124,15 @@ kbd { font: 500 11px/1 var(--f-mono); color: var(--faint); border: 1px solid var
 .summary .alarm { color: var(--bad); font-weight: 500; }
 .summary .alarm b { color: var(--bad); }
 .summary .soft-alarm { color: var(--faint); } .summary .soft-alarm b { color: var(--muted); }
+.focus-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin: 10px 24px 0; padding: 8px 10px 8px 14px; border-radius: var(--r); background: var(--accent-soft); border: 1px solid var(--accent); color: var(--accent-ink); font-size: 12.5px; }
+.focus-bar > b { display: inline-flex; align-items: center; gap: 7px; font-size: 13.5px; }
+.focus-bar nav { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; font: 500 12px/1 var(--f-mono); }
+.focus-bar nav span, .focus-bar nav button { padding: 4px 7px; border-radius: 5px; background: var(--surface); }
+.focus-bar nav span { color: var(--muted); }
+.focus-bar nav i { font-style: normal; }
+.focus-bar nav button:hover { background: var(--sunken); }
+.focus-bar nav button[aria-current="true"] { background: var(--accent); color: var(--on-solid); }
+.focus-bar .btn { margin-left: auto; padding: 5px 10px; }
 .view { position: relative; flex: 1; min-height: 0; }
 
 .stacks { padding: 14px 24px 40px; display: grid; gap: 18px; }
@@ -638,6 +647,7 @@ table.list { width: 100%; min-width: 1100px; max-width: 1600px; table-layout: fi
   .metas svg.i { width: 13px; height: 13px; }
   .c-dates { font-size: 11px; }
   .list-wrap { padding: 8px 16px 24px; }
+  .focus-bar { margin: 6px 16px 0; padding: 5px 8px 5px 10px; }
   table.list { min-width: 1080px; border-radius: 10px; }
   .list th { padding: 7px 8px; font-size: 10px; }
   .list td { padding: 4px 8px; font-size: 13px; }
@@ -660,6 +670,7 @@ table.list { width: 100%; min-width: 1100px; max-width: 1600px; table-layout: fi
   .rate { display: none; }
   .bar { --bar-pad: 16px; padding-block: 10px; }
   .summary, .stacks, .list-wrap { padding-left: 16px; padding-right: 16px; }
+  .focus-bar { margin-inline: 16px; }
   .solo-grid { grid-template-columns: minmax(0, 1fr); }
   .sync-meta { display: none; }
 }

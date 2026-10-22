@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ToastClose, ToastDescription, ToastProvider, ToastRoot, ToastTitle, ToastViewport, TooltipProvider } from 'reka-ui'
 
-const { st, start, refresh, setView, dropToast, useTranslate } = useStacks()
+const { st, start, refresh, setView, setFocus, dropToast, useTranslate } = useStacks()
 const { t, locale } = useI18n()
 useTranslate(t)
 watchEffect(() => {
@@ -19,7 +19,14 @@ function onKey(e: KeyboardEvent) {
     if (e.key === 'Escape') t.blur()
     return
   }
-  if (e.metaKey || e.ctrlKey || e.altKey || st.sel) return
+  if (e.metaKey || e.ctrlKey || e.altKey) return
+  if (st.sel) {
+    if (e.key === 'f' || e.key === 'F') {
+      setFocus(st.sel)
+      st.sel = null
+    }
+    return
+  }
   if (e.key === '/') {
     e.preventDefault()
     toolbar.value?.focusSearch()
@@ -27,6 +34,7 @@ function onKey(e: KeyboardEvent) {
   else if (e.key === 'r' || e.key === 'R') refresh()
   else if (e.key === '1') setView('graph')
   else if (e.key === '2') setView('list')
+  else if (e.key === 'Escape' && !e.repeat && st.focus && !document.querySelector('[data-dismissable-layer]')) setFocus(null)
 }
 onMounted(() => {
   start(t)
@@ -43,6 +51,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKey))
         <FilterRail />
         <main class="main">
           <SummaryBar />
+          <FocusBar />
           <div class="view">
             <StackGraph v-if="st.view === 'graph'" />
             <StackList v-else />

@@ -46,7 +46,8 @@ Then open Options → Repositories and rules to add your repos (`owner/repo` or 
 - Options menu: repositories and rules, language, theme, density (normal; compact keeps the sizes and drops descriptions and links; ultra compact also shrinks everything), auto sync interval (2 min by default, from 30 s to 10 min) and CI status.
 - CI status is off by default: it makes each `gh api` call a lot heavier.
 - Filter and detail sections fold, and stay folded across reloads.
-- Shortcuts: `/` search, `R` refresh, `1` / `2` switch view, `Esc` close.
+- Isolate a PR's lineage (its parents down to the base branch and the PRs stacked on it) from the PR details. It stays isolated across reloads; if the PR is merged or closed, the lineage moves to the next open PR in it.
+- Shortcuts: `/` search, `R` refresh, `1` / `2` switch view, `F` isolate the open PR's lineage, `Esc` close or show all PRs again.
 - Up to 300 open PRs per repo, fetched 20 at a time (bigger pages get 502s on large repos).
 
 If PRs don't load, the error shown is the one from `gh`: check `gh auth status` and SSO authorization for the org.

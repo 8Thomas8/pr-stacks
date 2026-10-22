@@ -9,6 +9,7 @@ const PATHS = {
   review: '<path d="M1.5 8s2.4-4.5 6.5-4.5S14.5 8 14.5 8s-2.4 4.5-6.5 4.5S1.5 8 1.5 8z"/><circle cx="8" cy="8" r="2"/>',
   x: '<path d="M4 4l8 8M12 4l-8 8"/>',
   ext: '<path d="M9 2.5h4.5V7M13.5 2.5L7 9M11.5 9.5v4h-9v-9h4"/>',
+  focus: '<circle cx="8" cy="8" r="5.5"/><circle cx="8" cy="8" r="1.8"/>',
   copy: '<rect x="5" y="5" width="8.5" height="8.5" rx="1.5"/><path d="M3 10.5V3.5a1 1 0 0 1 1-1h6.5"/>',
   chev: '<path d="M4 6l4 4 4-4"/>',
   chevL: '<path d="M10 4L6 8l4 4"/>',

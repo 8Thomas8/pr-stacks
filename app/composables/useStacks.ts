@@ -33,6 +33,14 @@ function readSettings(): SyncSettings | null {
   catch { return null }
 }
 
+function readFocus() {
+  try {
+    const f = JSON.parse(ls.get('stacks-focus') ?? 'null') as { id: string, line: string[] } | null
+    return f && typeof f.id === 'string' && Array.isArray(f.line) ? f : null
+  }
+  catch { return null }
+}
+
 let t: Translate = ((key: string) => key) as Translate
 const snap = shallowRef<Snapshot | null>(null)
 const st = reactive({
@@ -47,6 +55,7 @@ const st = reactive({
   labels: new Set<string>(),
   hideDrafts: false,
   sel: null as string | null,
+  focus: readFocus(),
   hover: null as string | null,
   collapsed: new Set<string>(JSON.parse(ls.get('stacks-collapsed') || '[]') as string[]),
   folded: new Set<string>(JSON.parse(ls.get('stacks-folded') || '[]') as string[]),
@@ -72,7 +81,8 @@ const lean = computed(() => st.density !== 'comfortable')
 const me = computed(() => snap.value?.me ?? '')
 const repos = computed(() => snap.value?.repos ?? [])
 const byIdMap = computed(() => new Map(prs.value.map(p => [p.id, p])))
-const forest = computed(() => buildForest(prs.value, repos.value))
+const tree = computed(() => buildForest(prs.value, repos.value))
+const forest = computed(() => (st.focus ? buildForest(prs.value.filter(p => st.focus!.line.includes(p.id)), repos.value) : tree.value))
 
 const avatars = new Map<string, Avatar>()
 function person(login: string): Avatar {
@@ -146,6 +156,7 @@ const QUICK: { k: QuickKey, f: (p: PullRequest) => boolean, c: string, hot?: boo
 ]
 
 function matches(p: PullRequest) {
+  if (st.focus && !st.focus.line.includes(p.id)) return false
   if (!QUICK.find(x => x.k === st.quick)!.f(p) && !st.kept.has(p.id)) return false
   if (st.repos.size && !st.repos.has(p.repo)) return false
   if (st.authors.size && !st.authors.has(p.author)) return false
@@ -178,6 +189,24 @@ function setCollapsed(key: string, closed: boolean) {
 function setAllFolded(fold: boolean) {
   forest.value.bands.forEach(b => (fold ? st.collapsed.add(b.key) : st.collapsed.delete(b.key)))
   saveCollapsed()
+}
+function setFocus(id: string | null) {
+  const p = id ? byId(id) : undefined
+  const line: string[] = []
+  for (let c = p; c && !line.includes(c.id); c = tree.value.parentOf(c)) line.unshift(c.id)
+  const walk = (x: string) => tree.value.kids(x).forEach((k) => {
+    if (line.includes(k.id)) return
+    line.push(k.id)
+    walk(k.id)
+  })
+  if (p) walk(p.id)
+  const fresh = p && p.id !== st.focus?.id
+  st.focus = p ? { id: p.id, line } : null
+  ls.set('stacks-focus', JSON.stringify(st.focus))
+  if (fresh) {
+    forest.value.bands.forEach(b => st.collapsed.delete(b.key))
+    saveCollapsed()
+  }
 }
 function setFolded(key: string, fold: boolean) {
   if (fold) st.folded.add(key)
@@ -258,6 +287,13 @@ async function refresh({ silent = false } = {}) {
       }, 1600)
     }
     if (st.sel && !byId(st.sel)) st.sel = null
+    const f = st.focus
+    if (f) {
+      const i = f.line.indexOf(f.id)
+      const next = [...f.line.slice(i), ...f.line.slice(0, i).reverse()].find(byId)
+      setFocus(next ?? null)
+      if (next !== f.id) toast(next ? t('focus.moved', { from: f.id, to: next }) : t('focus.ended', { id: f.id }))
+    }
     const gone = [...st.seen.keys()].filter(id => !byId(id))
     if (gone.length) {
       gone.forEach(id => st.seen.delete(id))
@@ -342,9 +378,9 @@ function start(translate: Translate) {
 
 export function useStacks() {
   return {
-    st, snap, prs, me, repos, forest, visibleBands, QUICK, every,
+    st, snap, prs, me, repos, tree, forest, visibleBands, QUICK, every,
     person, byId, submitted, sinceLastReview, toApproveByMe, reviewRequested, forMe, blocking, blocks, pulseClass, hoverSeen, pathHas, matches,
-    toast, dropToast, setCollapsed, setAllFolded, setFolded, refresh, setMode, setCi, setAutoS, setDensity, setView, start, useTranslate, setSettings,
+    toast, dropToast, setCollapsed, setAllFolded, setFocus, setFolded, refresh, setMode, setCi, setAutoS, setDensity, setView, start, useTranslate, setSettings,
     lean,
     ls,
     showCi: computed(() => !!snap.value?.ci),

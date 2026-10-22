@@ -366,5 +366,14 @@
   },
   "md": {
     "suggestion": "Suggested change"
+  },
+  "focus": {
+    "title": "Lineage of {id}",
+    "count": "{n} PR | {n} PRs",
+    "exit": "Show all",
+    "isolate": "Isolate lineage",
+    "tip": "Shows only this PR, its parents down to the base branch and the PRs stacked on it. Kept across reloads. Key F.",
+    "moved": "{from} was merged or closed, lineage moved to {to}",
+    "ended": "Lineage of {id} ended: all its PRs are merged or closed"
   }
 }
