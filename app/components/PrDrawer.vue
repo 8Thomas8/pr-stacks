@@ -2,7 +2,7 @@
 import { DialogClose, DialogContent, DialogDescription, DialogOverlay, DialogPortal, DialogRoot, DialogTitle } from 'reka-ui'
 import type { LinkedPr, PullRequest, Review } from '#shared/types/pr'
 
-const { st, byId, forest, submitted, sinceLastReview, blocks, person, toast, showCi } = useStacks()
+const { st, byId, tree, submitted, sinceLastReview, blocks, person, toast, showCi, setFocus } = useStacks()
 const { t, commits, fmtAt, fmtFull, since } = useFmt()
 
 const last = shallowRef<PullRequest>()
@@ -21,7 +21,7 @@ const fresh = computed(() => (p.value ? submitted(p.value).filter(r => r.after =
 const stale = computed(() => (p.value ? submitted(p.value).filter(r => r.after > 0) : []))
 const approvals = computed(() => fresh.value.filter(r => r.s === 'APPROVED').length)
 const pending = computed(() => p.value?.reviews.filter(r => r.s === 'REQUESTED') ?? [])
-const parent = computed(() => (p.value ? forest.value.parentOf(p.value) : undefined))
+const parent = computed(() => (p.value ? tree.value.parentOf(p.value) : undefined))
 interface DepRow { ref: string, url: string, title: string, state: LinkedPr['state'], tone: string, label: string, id?: string }
 const tracked = (o: PullRequest): DepRow => ({ ref: o.id, url: o.url, title: o.title, state: o.draft ? 'draft' : 'open', tone: o.status, label: t(`status.${o.status}.l`), id: o.id })
 function openRow(e: MouseEvent, r: DepRow) {
@@ -179,6 +179,9 @@ function copyBranch() {
 
         <div class="d-actions">
           <a class="btn primary" :href="p.url" target="_blank" rel="noopener"><Icon name="ext" />{{ t('link.open') }}</a>
+          <Tip :text="t('focus.tip')">
+            <button class="btn" @click="setFocus(p.id); st.sel = null"><Icon name="focus" />{{ t('focus.isolate') }}<kbd>F</kbd></button>
+          </Tip>
           <a class="btn" :href="`${p.url}/files`" target="_blank" rel="noopener">{{ t('drawer.files') }}</a>
           <Tip :text="t('drawer.copyTip')">
             <button class="btn" @click="copyBranch"><Icon name="copy" />{{ t('drawer.copy') }}</button>

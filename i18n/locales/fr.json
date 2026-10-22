@@ -366,5 +366,14 @@
   },
   "md": {
     "suggestion": "Modification suggérée"
+  },
+  "focus": {
+    "title": "Lignée de {id}",
+    "count": "{n} PR",
+    "exit": "Tout afficher",
+    "isolate": "Isoler la lignée",
+    "tip": "N’affiche que cette PR, ses parents jusqu’à la branche de base et les PR empilées dessus. Conservé au rechargement. Touche F.",
+    "moved": "{from} a été mergée ou fermée, lignée recentrée sur {to}",
+    "ended": "Lignée de {id} terminée : toutes ses PR sont mergées ou fermées"
   }
 }
