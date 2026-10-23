@@ -2,6 +2,9 @@ import { fileURLToPath } from 'node:url'
 
 export default defineNuxtConfig({
   modules: ['reka-ui/nuxt', '@nuxtjs/i18n', '@nuxt/eslint'],
+  // Electron's main process imports the server and serves it through the app:// protocol (no port opened).
+  // Build only: in dev the entry must stay nitro-dev's, the one that answers `nuxt dev`.
+  $production: { nitro: { preset: 'node-listener', serveStatic: true, entry: fileURLToPath(new URL('./electron/nitro-entry.ts', import.meta.url)) } },
   ssr: false,
   devtools: { enabled: false },
   app: {
@@ -14,8 +17,6 @@ export default defineNuxtConfig({
   css: ['@fontsource-variable/geist', '@fontsource-variable/geist-mono', '@fontsource-variable/schibsted-grotesk', '~/assets/css/main.css'],
   devServer: { host: '127.0.0.1', port: 4321 },
   compatibilityDate: '2026-09-01',
-  // Electron's main process imports the server and serves it through the app:// protocol (no port opened).
-  nitro: { preset: 'node-listener', serveStatic: true, entry: fileURLToPath(new URL('./electron/nitro-entry.ts', import.meta.url)) },
   eslint: { config: { stylistic: true } },
   i18n: {
     strategy: 'no_prefix',
