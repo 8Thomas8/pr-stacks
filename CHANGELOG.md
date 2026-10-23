@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/8Thomas8/pr-stacks/compare/v0.1.0...v0.1.1) (2026-10-23)
+
+
+### Bug Fixes
+
+* **desktop:** keep nitro-dev's entry in nuxt dev ([#16](https://github.com/8Thomas8/pr-stacks/issues/16)) ([8a721ec](https://github.com/8Thomas8/pr-stacks/commit/8a721ec877ef3a61124b4c2071e956bdb7b18ef8))
+
 ## 0.1.0 (2026-10-23)
 
 
