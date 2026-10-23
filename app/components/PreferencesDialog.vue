@@ -4,7 +4,7 @@ import type { SyncSettings } from '#shared/types/pr'
 import type { IconName } from './Icon.vue'
 
 const { st, every, toast, setSettings, setCi, setAutoS, setDensity } = useStacks()
-const { ds, desktop, checkGh, setTheme, setNotify, setNotifyKind, setBadge, testNotification, setAppPref } = useDesktop()
+const { ds, desktop, checkGh, setTheme, setNotify, setNotifyKind, setInboxRead, setBadge, testNotification, setAppPref } = useDesktop()
 const { t, locale, locales, setLocale } = useI18n()
 
 const TABS: { k: PrefsTab, icon: IconName }[] = [
@@ -37,6 +37,8 @@ const ci = computed({ get: () => st.ci, set: setCi })
 /* notifications */
 const notify = computed({ get: () => ds.notify, set: setNotify })
 const badge = computed({ get: () => ds.badge, set: setBadge })
+const inboxRead = computed({ get: () => ds.inboxRead, set: setInboxRead })
+const kindHint = (k: NotifyKind) => t(`prefs.kinds.${k}Hint`) + (k === 'ci' && !st.ci ? ` ${t('prefs.kinds.ciOff')}` : '')
 
 /* app */
 const closeToTray = computed({ get: () => ds.closeToTray, set: (v: boolean) => setAppPref({ closeToTray: v }) })
@@ -201,11 +203,16 @@ async function recheck() {
                   <SwitchRoot v-model="notify" class="switch" :aria-label="t('prefs.notify')"><SwitchThumb class="switch-thumb" /></SwitchRoot>
                 </label>
               </section>
-              <section class="modal-sec" :class="{ off: !ds.notify }">
-                <h5>{{ t('prefs.notifyWhen') }}</h5>
-                <label v-for="k in NOTIFY_KINDS" :key="k" class="field toggle">
-                  <span class="menu-t"><span>{{ t(`prefs.kinds.${k}`) }}</span><small>{{ t(`prefs.kinds.${k}Hint`) }}</small></span>
+              <section v-for="(kinds, g) in NOTIFY_GROUPS" :key="g" class="modal-sec" :class="{ off: !ds.notify }">
+                <h5>{{ t(`prefs.notifyGroups.${g}`) }}</h5>
+                <p v-if="g === 'inbox'" class="hint">{{ t('prefs.inboxHint') }}</p>
+                <label v-for="k in kinds" :key="k" class="field toggle">
+                  <span class="menu-t"><span>{{ t(`prefs.kinds.${k}`) }}</span><small>{{ kindHint(k) }}</small></span>
                   <SwitchRoot :model-value="ds.notifyKinds.has(k)" class="switch" :disabled="!ds.notify" :aria-label="t(`prefs.kinds.${k}`)" @update:model-value="(v: boolean) => setNotifyKind(k, v)"><SwitchThumb class="switch-thumb" /></SwitchRoot>
+                </label>
+                <label v-if="g === 'inbox'" class="field toggle">
+                  <span class="menu-t"><span>{{ t('prefs.inboxRead') }}</span><small>{{ t('prefs.inboxReadHint') }}</small></span>
+                  <SwitchRoot v-model="inboxRead" class="switch" :disabled="!ds.notify" :aria-label="t('prefs.inboxRead')"><SwitchThumb class="switch-thumb" /></SwitchRoot>
                 </label>
               </section>
               <section class="modal-sec">

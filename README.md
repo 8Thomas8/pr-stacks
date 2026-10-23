@@ -42,7 +42,10 @@ Then open Preferences → Repositories to add your repos (`owner/repo` or a GitH
 
 - The toolbar is the title bar: drag it from any empty spot. On macOS the app has its regular menu bar.
 - Closing the window keeps PR Stacks in the notification area (menu bar on macOS) and auto sync keeps running. Turn it off (always on for macOS), or open at login, in Preferences → Application.
-- System notifications when a PR starts needing you (review requested, new commits to re-approve, changes requested), each kind can be turned off in Preferences → Notifications. The tray icon turns red when PRs need you (their number in its tooltip); on macOS the Dock icon shows the count.
+- System notifications when a PR starts needing you, each kind can be turned off in Preferences → Notifications:
+  - reviews: review requested, new commits to re-approve;
+  - your PRs, from one sync to the next: approved, changes requested, new comments, CI failed, conflict, the PR it is stacked on merged or closed;
+  - your GitHub notifications, checked every minute on every repository: mentions, PRs merged or closed, assignments, activity on repositories not tracked here. Clicking one marks it read on GitHub (can be turned off). The tray icon turns red when PRs need you (their number in its tooltip); on macOS the Dock icon shows the count.
 - Links to GitHub open in your browser.
 
 ## Development

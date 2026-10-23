@@ -401,15 +401,41 @@
       "views": "Stacks / List view",
       "zoom": "Zoom in / out / reset"
     },
-    "notifyIntro": "PR Stacks notifies you when a PR starts needing you, after a sync (auto sync keeps running in the background).",
-    "notifyWhen": "Notify me when",
+    "notifyIntro": "PR Stacks notifies you when a PR starts needing you. Reviews and your own PRs are compared from one sync to the next (auto sync keeps running in the background); the GitHub inbox is checked every minute.",
+    "notifyGroups": {
+      "review": "Reviews",
+      "mine": "My PRs",
+      "inbox": "GitHub notifications"
+    },
+    "inboxHint": "From github.com/notifications, on every repository, including the ones not tracked here.",
+    "inboxRead": "Mark as read on GitHub",
+    "inboxReadHint": "Clicking the notification also marks it read on github.com",
     "kinds": {
       "requested": "My review is requested",
       "requestedHint": "A PR asks for your review for the first time",
       "approve": "A PR needs re-approval",
       "approveHint": "New commits after your review, or your review was requested again",
-      "changes": "Changes are requested",
-      "changesHint": "A reviewer requested changes on a PR"
+      "approved": "My PR is approved",
+      "approvedHint": "It has the approvals it needs: ready to merge",
+      "changes": "Changes are requested on my PR",
+      "changesHint": "A reviewer requested changes",
+      "comments": "New comments on my PR",
+      "commentsHint": "A comment or a review thread from someone else",
+      "ci": "CI fails on my PR",
+      "ciHint": "The checks of the last commit failed.",
+      "ciOff": "Needs CI status (Sync tab).",
+      "conflict": "My PR has a conflict",
+      "conflictHint": "It no longer merges cleanly into its base",
+      "parent": "The PR under mine is gone",
+      "parentHint": "The PR it is stacked on was merged or closed: time to check its base and rebase",
+      "mention": "I am mentioned",
+      "mentionHint": "You or your team are {'@'}mentioned on a PR",
+      "merged": "A PR I follow is merged or closed",
+      "mergedHint": "Yours, or one you reviewed or commented on",
+      "assign": "A PR is assigned to me",
+      "assignHint": "You were added as an assignee",
+      "elsewhere": "Activity on other repositories",
+      "elsewhereHint": "Review requests and comments on repositories not tracked here"
     },
     "badge": "Alert on the tray icon",
     "badgeMac": "Counter on the Dock icon",
@@ -452,7 +478,22 @@
     "tray": "{n} PR needs you | {n} PRs need you",
     "approve": "New commits since your review: re-approve",
     "requested": "Your review is requested",
-    "changes": "Changes were requested",
-    "test": "Notifications are working."
+    "changes": "Changes requested by {who}",
+    "test": "Notifications are working.",
+    "approved": "Approved: ready to merge",
+    "comments": "New comments from {who}",
+    "ci": "CI failed",
+    "conflict": "Conflict with {base}",
+    "parent": "{parent} is no longer open: check the base and rebase",
+    "gh": {
+      "mention": "You were mentioned",
+      "team_mention": "Your team was mentioned",
+      "assign": "Assigned to you",
+      "review_requested": "Your review is requested",
+      "comment": "New comment",
+      "author": "New activity on your PR",
+      "merged": "Merged",
+      "closed": "Closed"
+    }
   }
 }

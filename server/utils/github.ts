@@ -34,7 +34,7 @@ const prFields = (ci: boolean) => `
   number title body url isDraft createdAt updatedAt headRefName headRefOid baseRefName mergeable mergeStateStatus reviewDecision
   author { login avatarUrl ... on User { name } }
   labels(first: 20) { nodes { name color description } }
-  comments { totalCount }
+  comments(last: 1) { totalCount nodes { author { login } } }
   commits(last: 30) { totalCount nodes { commit { oid abbreviatedOid messageHeadline committedDate } } }
   ${ci ? 'head: commits(last: 1) { nodes { commit { statusCheckRollup { state } } } }' : ''}
   reviews(last: 40) { nodes { state submittedAt author { login avatarUrl ... on User { name } } commit { oid } } }
@@ -72,7 +72,7 @@ interface GhPr {
   reviewDecision: string | null
   author: GhActor | null
   labels: { nodes: { name: string, color: string, description: string | null }[] }
-  comments: { totalCount: number }
+  comments: { totalCount: number, nodes: { author: GhActor | null }[] }
   commits: { totalCount: number, nodes: { commit: GhCommit }[] }
   head?: { nodes: { commit: { statusCheckRollup: { state: string } | null } }[] }
   reviews: { nodes: { state: string, submittedAt: string, author: GhActor | null, commit: { oid: string } | null }[] }
@@ -190,7 +190,7 @@ function normalize(repos: RepoData[], { approvals, fresh }: Pick<SyncOptions, 'a
         status, ci: CI[rollup?.state ?? ''] || 'none',
         createdAt: n.createdAt, updatedAt: n.updatedAt, labels: n.labels.nodes.map(l => l.name), reviews,
         commits: commits.map(c => [c.abbreviatedOid, c.messageHeadline, c.committedDate]), commitCount: n.commits.totalCount,
-        threads, comments: n.comments.totalCount + threadComments, dependsOn: [], links: [],
+        threads, comments: n.comments.totalCount + threadComments, lastComment: n.comments.nodes[0]?.author?.login ?? null, dependsOn: [], links: [],
       })
     }
   }
