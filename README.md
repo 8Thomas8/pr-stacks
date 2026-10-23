@@ -20,7 +20,7 @@ Electron + Nuxt 4 + Reka UI. Data comes from `gh api graphql`, run in the app's 
 | --- | --- |
 | ![List view](docs/screenshots/list.png) | ![PR details](docs/screenshots/details-dark.png) |
 
-![Preferences](docs/screenshots/settings.png)
+![Preferences](docs/screenshots/preferences.png)
 
 ## Install
 
@@ -57,7 +57,7 @@ npm run dist       # installers for the current OS in dist/
 npm run icons      # regenerate the PNG icons from build/icon.svg and build/tray.svg
 ```
 
-`PR_STACKS_DEMO=1 npm run dev` serves made-up PRs (repos `acme/web` and `acme/api`) without calling `gh`: that's how the screenshots are taken.
+`PR_STACKS_DEMO=1 npm run dev` serves made-up PRs (repos `acme/web` and `acme/api`) without calling `gh`: that's how the screenshots are taken, in the Electron window at 1440×900 (×2).
 
 ### Releases
 
