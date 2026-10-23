@@ -1,0 +1,90 @@
+name: Release
+
+# release-please keeps a release PR open from the conventional commits on master; merging it tags
+# the version and creates a draft GitHub release, the installers are built on each OS and attached,
+# then the release is published: it never shows up without its installers.
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag to (re)build the installers for, e.g. v0.1.0
+        required: true
+
+permissions:
+  contents: read
+
+concurrency: release
+
+jobs:
+  release-please:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    outputs:
+      created: ${{ steps.release.outputs.release_created }}
+      tag: ${{ steps.release.outputs.tag_name }}
+    steps:
+      - uses: googleapis/release-please-action@v5
+        id: release
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  installers:
+    needs: release-please
+    if: ${{ !cancelled() && (needs.release-please.outputs.created == 'true' || github.event_name == 'workflow_dispatch') }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    env:
+      TAG: ${{ needs.release-please.outputs.tag || inputs.tag }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ env.TAG }}
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      # lockfile written by npm 11, npm 10 resolves optional peers differently
+      - run: npm install -g npm@11
+      - run: npm ci
+      - run: npm run build
+      - run: npx electron-builder --publish never
+        env:
+          # no signing certificates yet (macOS gets an ad-hoc signature, see electron-builder.yml)
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+      - name: Attach the installers to the release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          shopt -s nullglob
+          files=(dist/pr-stacks-*.{AppImage,deb,exe,dmg})
+          (( ${#files[@]} )) || { echo "No installer found in dist/"; exit 1; }
+          ls -la "${files[@]}"
+          gh release upload "$TAG" "${files[@]}" --clobber
+
+  publish:
+    needs: [release-please, installers]
+    # an OS that failed leaves the release in draft: fix it, then run the workflow by hand with the tag
+    if: ${{ !cancelled() && needs.installers.result == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.release-please.outputs.tag || inputs.tag }}
+        run: gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --draft=false

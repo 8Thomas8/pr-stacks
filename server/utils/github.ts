@@ -16,7 +16,7 @@ const parseJson = (s: string): { data?: unknown } | null => {
 
 function gh<T>(args: string[], { partial = false } = {}): Promise<T> {
   return new Promise((resolve, reject) => {
-    execFile('gh', args, { maxBuffer: 64 * 1024 * 1024 }, (err, stdout, stderr) => {
+    execFile('gh', args, { maxBuffer: 64 * 1024 * 1024, windowsHide: true }, (err, stdout, stderr) => {
       if (err && partial) {
         const res = parseJson(stdout)
         if (res?.data) return resolve(res as T)

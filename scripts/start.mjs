@@ -9,8 +9,9 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const OUTPUT = join(ROOT, '.output')
 const STAMP = join(OUTPUT, '.build-hash')
 const SERVER = join(OUTPUT, 'server', 'index.mjs')
+const ELECTRON = join(ROOT, 'node_modules', 'electron', 'cli.js')
 
-const SOURCES = ['app', 'server', 'shared', 'i18n', 'public', 'nuxt.config.ts', 'package.json', 'package-lock.json', 'tsconfig.json']
+const SOURCES = ['app', 'electron/nitro-entry.ts', 'server', 'shared', 'i18n', 'public', 'nuxt.config.ts', 'package.json', 'package-lock.json', 'tsconfig.json']
 
 function files(path) {
   if (!existsSync(path)) return []
@@ -40,10 +41,6 @@ else {
   writeFileSync(STAMP, `${hash}\n`)
 }
 
-const server = spawn(process.execPath, [SERVER], {
-  cwd: ROOT,
-  stdio: 'inherit',
-  env: { ...process.env, HOST: process.env.HOST || '127.0.0.1', PORT: process.env.PORT || '4321' },
-})
-for (const sig of ['SIGINT', 'SIGTERM']) process.on(sig, () => server.kill(sig))
-server.on('exit', code => process.exit(code ?? 0))
+const electron = spawn(process.execPath, [ELECTRON, ROOT], { cwd: ROOT, stdio: 'inherit' })
+for (const sig of ['SIGINT', 'SIGTERM']) process.on(sig, () => electron.kill(sig))
+electron.on('exit', code => process.exit(code ?? 0))

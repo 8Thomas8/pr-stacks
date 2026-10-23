@@ -73,7 +73,7 @@
     "manual": "Manual",
     "manualTip": "Data only changes when you click ↻ or press R.",
     "auto": "Auto · {every}",
-    "autoTip": "Polls GitHub every {every}. Paused while the tab is hidden.",
+    "autoTip": "Polls GitHub every {every}, even while the window is closed to the tray.",
     "loading": "Loading…",
     "agoS": "Synced {n} s ago",
     "agoM": "Synced {n} min ago",
@@ -280,7 +280,7 @@
   },
   "state": {
     "loadFailed": "Couldn't load PRs",
-    "loadHint": "Check {auth} and the repositories in Options → Repositories and rules, then refresh (R).",
+    "loadHint": "Check {auth} and the repositories in Preferences → Repositories, then refresh (R).",
     "loading": "Loading PRs via {cmd}…",
     "noPrs": "No open PRs in the tracked repositories.",
     "noMatch": "No PR matches these filters.",
@@ -295,14 +295,12 @@
     "closed": "{n} closed or merged",
     "failed": "Sync failed",
     "unknown": "Unknown error",
-    "modeAuto": "Auto sync every {every}, paused while the tab is hidden",
+    "modeAuto": "Auto sync every {every}, even with the window hidden",
     "modeManual": "Manual sync: ↻ button or R key",
     "linksFailed": "Couldn't look up mentioned PRs",
     "unexpected": "Unexpected error"
   },
   "options": {
-    "title": "Options",
-    "tip": "Language, theme, display, auto sync, CI status",
     "lang": "Language",
     "theme": "Theme",
     "themes": {
@@ -310,7 +308,6 @@
       "light": "Light",
       "dark": "Dark"
     },
-    "data": "Data",
     "ci": "Fetch CI status",
     "ciHint": "Heavier GitHub queries",
     "ciOn": "CI status enabled",
@@ -329,8 +326,7 @@
     "densitySet": "Display: {name}",
     "themeSet": "Theme: {name}",
     "langSet": "Language: English",
-    "settings": "Repositories and rules…",
-    "settingsHint": "No tracked repository | {n} tracked repository | {n} tracked repositories"
+    "settings": "Repositories and rules…"
   },
   "linkState": {
     "open": "Open",
@@ -347,7 +343,7 @@
   },
   "settings": {
     "title": "Repositories and rules",
-    "sub": "Saved in this browser, sent with each sync.",
+    "sub": "Saved on this computer, sent with every sync.",
     "repos": "Tracked repositories",
     "noRepos": "No repository yet.",
     "repoPlaceholder": "owner/repo or GitHub URL",
@@ -375,5 +371,88 @@
     "tip": "Shows only this PR, its parents down to the base branch and the PRs stacked on it. Kept across reloads. Key F.",
     "moved": "{from} was merged or closed, lineage moved to {to}",
     "ended": "Lineage of {id} ended: all its PRs are merged or closed"
+  },
+  "prefs": {
+    "title": "Preferences",
+    "tip": "Preferences (Ctrl/⌘ ,)",
+    "tabs": {
+      "general": "General",
+      "repos": "Repositories",
+      "sync": "Sync",
+      "notifications": "Notifications",
+      "app": "Application",
+      "github": "GitHub CLI"
+    },
+    "autoHint": "Used when sync is set to Auto, also while the window is in the tray",
+    "notify": "System notifications",
+    "notifyHint": "Shown by your operating system, even when the window is closed to the tray",
+    "tray": "Keep running in the notification area",
+    "trayHint": "Closing the window keeps PR Stacks syncing in the background",
+    "trayNoHost": "Your desktop shows no notification area (on GNOME, install the AppIndicator extension): closing the window quits PR Stacks",
+    "trayMac": "Keep running in the menu bar",
+    "trayMacHint": "Closing the window keeps PR Stacks in the menu bar, quit with ⌘Q",
+    "login": "Open at login",
+    "loginHint": "Starts hidden in the tray when you log in",
+    "shortcuts": "Keyboard shortcuts",
+    "keys": {
+      "refresh": "Refresh",
+      "search": "Search",
+      "prefs": "Preferences",
+      "views": "Stacks / List view",
+      "zoom": "Zoom in / out / reset"
+    },
+    "notifyIntro": "PR Stacks notifies you when a PR starts needing you, after a sync (auto sync keeps running in the background).",
+    "notifyWhen": "Notify me when",
+    "kinds": {
+      "requested": "My review is requested",
+      "requestedHint": "A PR asks for your review for the first time",
+      "approve": "A PR needs re-approval",
+      "approveHint": "New commits after your review, or your review was requested again",
+      "changes": "Changes are requested",
+      "changesHint": "A reviewer requested changes on a PR"
+    },
+    "badge": "Alert on the tray icon",
+    "badgeMac": "Counter on the Dock icon",
+    "badgeHint": "When PRs need you, like the New view (their number in the icon tooltip)",
+    "notifyTest": "Send a test notification"
+  },
+  "gh": {
+    "checking": "Checking GitHub CLI…",
+    "okTip": "GitHub CLI {version} signed in as {login} on {host}",
+    "fixTip": "Click to set it up.",
+    "state": {
+      "ok": "GitHub CLI is ready",
+      "missing": "GitHub CLI is not installed",
+      "unauthenticated": "GitHub CLI is not signed in",
+      "error": "GitHub CLI is not responding"
+    },
+    "short": {
+      "ok": "ready",
+      "missing": "not installed",
+      "unauthenticated": "not signed in",
+      "error": "error"
+    },
+    "needed": "PR Stacks reads your pull requests through the gh command line tool.",
+    "setup": "Set up GitHub CLI",
+    "intro": "PR Stacks never stores a token: every request goes through gh, with the account it is signed in with.",
+    "account": "Signed in as {login} on {host}",
+    "recheck": "Check again",
+    "howTo": "How to set it up",
+    "step1": "Install GitHub CLI",
+    "step1Hint": "Homebrew, winget, apt… pick your platform on the website",
+    "step2": "Sign in from a terminal",
+    "step2Hint": "Choose GitHub.com, then follow the browser login",
+    "step3": "Come back here",
+    "step3Hint": "The status refreshes by itself when the window gets the focus back",
+    "copied": "Command copied",
+    "ready": "GitHub CLI ready ({login})"
+  },
+  "notify": {
+    "many": "{n} PRs need you",
+    "tray": "{n} PR needs you | {n} PRs need you",
+    "approve": "New commits since your review: re-approve",
+    "requested": "Your review is requested",
+    "changes": "Changes were requested",
+    "test": "Notifications are working."
   }
 }

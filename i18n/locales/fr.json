@@ -73,7 +73,7 @@
     "manual": "Manuel",
     "manualTip": "Les données ne bougent que quand tu cliques sur ↻ ou appuies sur R.",
     "auto": "Auto · {every}",
-    "autoTip": "Interroge GitHub à intervalle de {every}. En pause quand l’onglet est masqué.",
+    "autoTip": "Interroge GitHub à intervalle de {every}, y compris quand la fenêtre est réduite dans la zone de notification.",
     "loading": "Chargement…",
     "agoS": "Synchro il y a {n} s",
     "agoM": "Synchro il y a {n} min",
@@ -280,7 +280,7 @@
   },
   "state": {
     "loadFailed": "Impossible de charger les PR",
-    "loadHint": "Vérifie {auth} et les dépôts dans Options → Dépôts et règles, puis rafraîchis (R).",
+    "loadHint": "Vérifie {auth} et les dépôts dans Préférences → Dépôts, puis rafraîchis (R).",
     "loading": "Chargement des PR via {cmd}…",
     "noPrs": "Aucune PR ouverte dans les dépôts suivis.",
     "noMatch": "Aucune PR ne correspond à ces filtres.",
@@ -295,14 +295,12 @@
     "closed": "{n} fermée(s) ou mergée(s)",
     "failed": "Synchro échouée",
     "unknown": "Erreur inconnue",
-    "modeAuto": "Synchro auto ({every}), en pause si l’onglet est masqué",
+    "modeAuto": "Synchro auto ({every}), même fenêtre masquée",
     "modeManual": "Synchro manuelle : bouton ↻ ou touche R",
     "linksFailed": "Impossible de vérifier les PR mentionnées",
     "unexpected": "Erreur inattendue"
   },
   "options": {
-    "title": "Options",
-    "tip": "Langue, thème, affichage, synchro auto, statut de CI",
     "lang": "Langue",
     "theme": "Thème",
     "themes": {
@@ -310,7 +308,6 @@
       "light": "Clair",
       "dark": "Sombre"
     },
-    "data": "Données",
     "ci": "Récupérer le statut de CI",
     "ciHint": "Requêtes GitHub plus lourdes",
     "ciOn": "Statut de CI activé",
@@ -329,8 +326,7 @@
     "densitySet": "Affichage : {name}",
     "themeSet": "Thème : {name}",
     "langSet": "Langue : français",
-    "settings": "Dépôts et règles…",
-    "settingsHint": "Aucun dépôt suivi | {n} dépôt suivi | {n} dépôts suivis"
+    "settings": "Dépôts et règles…"
   },
   "linkState": {
     "open": "Ouverte",
@@ -347,7 +343,7 @@
   },
   "settings": {
     "title": "Dépôts et règles",
-    "sub": "Enregistrés dans ce navigateur, envoyés à chaque synchro.",
+    "sub": "Enregistrés sur cet ordinateur, envoyés à chaque synchro.",
     "repos": "Dépôts suivis",
     "noRepos": "Aucun dépôt pour l’instant.",
     "repoPlaceholder": "owner/repo ou URL GitHub",
@@ -375,5 +371,88 @@
     "tip": "N’affiche que cette PR, ses parents jusqu’à la branche de base et les PR empilées dessus. Conservé au rechargement. Touche F.",
     "moved": "{from} a été mergée ou fermée, lignée recentrée sur {to}",
     "ended": "Lignée de {id} terminée : toutes ses PR sont mergées ou fermées"
+  },
+  "prefs": {
+    "title": "Préférences",
+    "tip": "Préférences (Ctrl/⌘ ,)",
+    "tabs": {
+      "general": "Général",
+      "repos": "Dépôts",
+      "sync": "Synchronisation",
+      "notifications": "Notifications",
+      "app": "Application",
+      "github": "GitHub CLI"
+    },
+    "autoHint": "Utilisé en mode Auto, y compris quand la fenêtre est dans la zone de notification",
+    "notify": "Notifications système",
+    "notifyHint": "Affichées par ton système, même quand la fenêtre est fermée dans la zone de notification",
+    "tray": "Rester dans la zone de notification",
+    "trayHint": "Fermer la fenêtre laisse PR Stacks synchroniser en arrière-plan",
+    "trayNoHost": "Ton bureau n’affiche pas de zone de notification (sur GNOME, installe l’extension AppIndicator) : fermer la fenêtre quitte PR Stacks",
+    "trayMac": "Rester dans la barre des menus",
+    "trayMacHint": "Fermer la fenêtre garde PR Stacks dans la barre des menus, ⌘Q pour quitter",
+    "login": "Lancer à l’ouverture de session",
+    "loginHint": "Démarre masqué dans la zone de notification",
+    "shortcuts": "Raccourcis clavier",
+    "keys": {
+      "refresh": "Rafraîchir",
+      "search": "Rechercher",
+      "prefs": "Préférences",
+      "views": "Vue Piles / Liste",
+      "zoom": "Zoom avant / arrière / normal"
+    },
+    "notifyIntro": "PR Stacks te prévient quand une PR commence à te concerner, après une synchro (la synchro auto continue en arrière-plan).",
+    "notifyWhen": "Me notifier quand",
+    "kinds": {
+      "requested": "Ma review est demandée",
+      "requestedHint": "Une PR demande ta review pour la première fois",
+      "approve": "Une PR est à ré-approuver",
+      "approveHint": "Nouveaux commits après ta review, ou ta review est redemandée",
+      "changes": "Des changements sont demandés",
+      "changesHint": "Un reviewer a demandé des changements sur une PR"
+    },
+    "badge": "Alerte sur l’icône de notification",
+    "badgeMac": "Compteur sur l’icône du Dock",
+    "badgeHint": "Quand des PR te concernent, comme la vue Nouveautés (leur nombre dans l’info-bulle de l’icône)",
+    "notifyTest": "Envoyer une notification de test"
+  },
+  "gh": {
+    "checking": "Vérification de GitHub CLI…",
+    "okTip": "GitHub CLI {version} connecté en tant que {login} sur {host}",
+    "fixTip": "Clique pour le configurer.",
+    "state": {
+      "ok": "GitHub CLI est prêt",
+      "missing": "GitHub CLI n’est pas installé",
+      "unauthenticated": "GitHub CLI n’est pas connecté",
+      "error": "GitHub CLI ne répond pas"
+    },
+    "short": {
+      "ok": "prêt",
+      "missing": "non installé",
+      "unauthenticated": "non connecté",
+      "error": "erreur"
+    },
+    "needed": "PR Stacks lit tes pull requests via l’outil en ligne de commande gh.",
+    "setup": "Configurer GitHub CLI",
+    "intro": "PR Stacks ne stocke aucun token : chaque requête passe par gh, avec le compte qui y est connecté.",
+    "account": "Connecté en tant que {login} sur {host}",
+    "recheck": "Vérifier à nouveau",
+    "howTo": "Comment le configurer",
+    "step1": "Installer GitHub CLI",
+    "step1Hint": "Homebrew, winget, apt… choisis ta plateforme sur le site",
+    "step2": "Se connecter depuis un terminal",
+    "step2Hint": "Choisis GitHub.com, puis suis la connexion dans le navigateur",
+    "step3": "Revenir ici",
+    "step3Hint": "Le statut se met à jour tout seul quand la fenêtre reprend le focus",
+    "copied": "Commande copiée",
+    "ready": "GitHub CLI prêt ({login})"
+  },
+  "notify": {
+    "many": "{n} PR te concernent",
+    "tray": "{n} PR te concerne | {n} PR te concernent",
+    "approve": "Nouveaux commits depuis ta review : à ré-approuver",
+    "requested": "Ta review est demandée",
+    "changes": "Des changements ont été demandés",
+    "test": "Les notifications fonctionnent."
   }
 }

@@ -91,3 +91,12 @@ export interface SyncSettings {
   approvals: number
   fresh: boolean
 }
+
+export type GhState = 'ok' | 'missing' | 'unauthenticated' | 'error'
+export interface GhStatus {
+  state: GhState
+  version?: string | null
+  login?: string
+  host?: string
+  detail?: string
+}

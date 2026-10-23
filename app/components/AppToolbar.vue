@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { st, repos, every, refresh, setMode, setView } = useStacks()
+const { st, repos, every, refresh, setMode, setView, openPrefs } = useStacks()
 const { t } = useI18n()
 const search = ref<HTMLInputElement>()
 defineExpose({ focusSearch: () => search.value?.focus() })
@@ -51,7 +51,7 @@ const sub = computed(() => (st.mode === 'auto' ? t('toolbar.next', { n: `${Math.
       <Tip :text="t('toolbar.searchTip')"><kbd>/</kbd></Tip>
     </label>
     <div class="spacer"></div>
-    <OptionsMenu />
+    <GhBadge />
     <div class="sync" :class="{ auto: st.mode === 'auto' }">
       <SegToggle
         v-model="mode"
@@ -71,5 +71,8 @@ const sub = computed(() => (st.mode === 'auto' ? t('toolbar.next', { n: `${Math.
         </button>
       </Tip>
     </div>
+    <Tip :text="t('prefs.tip')" side="bottom">
+      <button class="theme-btn" :aria-label="t('prefs.title')" @click="openPrefs()"><Icon name="options" /></button>
+    </Tip>
   </header>
 </template>

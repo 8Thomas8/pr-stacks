@@ -1,11 +1,16 @@
 <script setup lang="ts">
+import type { DesktopCommand } from '~/types/desktop'
 import { ToastClose, ToastDescription, ToastProvider, ToastRoot, ToastTitle, ToastViewport, TooltipProvider } from 'reka-ui'
 
-const { st, start, refresh, setView, setFocus, dropToast, useTranslate } = useStacks()
-const { t, locale } = useI18n()
+const { st, ls, start, refresh, setView, setFocus, dropToast, useTranslate, openPrefs } = useStacks()
+const { desktop, startDesktop } = useDesktop()
+const { t, locale, locales, setLocale } = useI18n()
 useTranslate(t)
+const savedLang = ls.get('stacks-lang')
+if (savedLang !== locale.value && locales.value.some(l => l.code === savedLang)) setLocale(savedLang as typeof locale.value)
 watchEffect(() => {
   document.documentElement.lang = locale.value
+  desktop()?.setLang(locale.value)
 })
 watchEffect(() => {
   if (st.density === 'comfortable') delete document.documentElement.dataset.density
@@ -13,7 +18,29 @@ watchEffect(() => {
 })
 const toolbar = ref<{ focusSearch: () => void }>()
 
+function command(cmd: DesktopCommand) {
+  if (cmd === 'refresh') refresh()
+  else if (cmd === 'preferences') openPrefs()
+  else if (cmd === 'gh') openPrefs('github')
+  else if (cmd === 'search') toolbar.value?.focusSearch()
+  else if (cmd === 'view:graph') setView('graph')
+  else if (cmd === 'view:list') setView('list')
+}
+// Ctrl on Windows/Linux, Cmd on macOS (the macOS menu only displays these shortcuts).
+// Digits by physical key (`code`): on AZERTY the digit row gives & é…; letters follow the layout.
+const LETTERS: Record<string, DesktopCommand> = { 'r': 'refresh', 'f': 'search', ',': 'preferences' }
+const DIGITS: Record<string, DesktopCommand> = { 1: 'view:graph', 2: 'view:list' }
+const digit = (e: KeyboardEvent) => DIGITS[e.code.replace(/^(Digit|Numpad)/, '')]
+
 function onKey(e: KeyboardEvent) {
+  if ((desktop()?.platform === 'darwin' ? e.metaKey : e.ctrlKey) && !e.altKey && !e.shiftKey) {
+    const cmd = LETTERS[e.key.toLowerCase()] ?? digit(e)
+    if (cmd) {
+      e.preventDefault()
+      command(cmd)
+    }
+    return
+  }
   const t = e.target
   if (t instanceof HTMLElement && t.matches('input, textarea')) {
     if (e.key === 'Escape') t.blur()
@@ -32,12 +59,12 @@ function onKey(e: KeyboardEvent) {
     toolbar.value?.focusSearch()
   }
   else if (e.key === 'r' || e.key === 'R') refresh()
-  else if (e.key === '1') setView('graph')
-  else if (e.key === '2') setView('list')
+  else if (digit(e)) command(digit(e)!)
   else if (e.key === 'Escape' && !e.repeat && st.focus && !document.querySelector('[data-dismissable-layer]')) setFocus(null)
 }
 onMounted(() => {
   start(t)
+  startDesktop(t, command)
   document.addEventListener('keydown', onKey)
 })
 onBeforeUnmount(() => document.removeEventListener('keydown', onKey))
@@ -59,7 +86,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKey))
         </main>
       </div>
       <PrDrawer />
-      <SettingsDialog />
+      <PreferencesDialog />
       <ToastRoot v-for="item in st.toasts" :key="item.id" class="toast" :data-kind="item.kind" :type="item.kind === 'error' ? 'foreground' : 'background'" :duration="item.kind === 'error' ? 12000 : undefined" @update:open="(o: boolean) => !o && dropToast(item.id)">
         <span v-if="item.kind !== 'info'" class="toast-i"><Icon :name="item.kind === 'ok' ? 'check' : 'conflict'" /></span>
         <ToastTitle as="span">{{ item.msg }}</ToastTitle>

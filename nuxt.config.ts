@@ -1,3 +1,5 @@
+import { fileURLToPath } from 'node:url'
+
 export default defineNuxtConfig({
   modules: ['reka-ui/nuxt', '@nuxtjs/i18n', '@nuxt/eslint'],
   ssr: false,
@@ -5,17 +7,15 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: 'PR Stacks',
-      link: [
-        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap' },
-        { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
-      ],
+      link: [{ rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' }],
     },
   },
-  css: ['~/assets/css/main.css'],
+  // fonts are bundled so the desktop app works offline
+  css: ['@fontsource-variable/geist', '@fontsource-variable/geist-mono', '@fontsource-variable/schibsted-grotesk', '~/assets/css/main.css'],
   devServer: { host: '127.0.0.1', port: 4321 },
   compatibilityDate: '2026-09-01',
+  // Electron's main process imports the server and serves it through the app:// protocol (no port opened).
+  nitro: { preset: 'node-listener', serveStatic: true, entry: fileURLToPath(new URL('./electron/nitro-entry.ts', import.meta.url)) },
   eslint: { config: { stylistic: true } },
   i18n: {
     strategy: 'no_prefix',
@@ -25,6 +25,7 @@ export default defineNuxtConfig({
       { code: 'fr', language: 'fr-FR', name: 'Français', file: 'fr.json' },
     ],
     vueI18n: './i18n.config.ts',
-    detectBrowserLanguage: { useCookie: true, cookieKey: 'stacks-lang', fallbackLocale: 'en', redirectOn: 'root' },
+    // the choice is kept in localStorage (see app.vue): cookies are not reliable on the app:// scheme
+    detectBrowserLanguage: { useCookie: false, fallbackLocale: 'en' },
   },
 })
