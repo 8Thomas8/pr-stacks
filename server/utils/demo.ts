@@ -132,9 +132,12 @@ export function demoSnapshot({ ci, approvals, fresh }: Pick<SyncOptions, 'ci' | 
   const prs: PullRequest[] = SEEDS.map((s) => {
     const reviews = s.reviews ?? []
     const ok = reviews.filter(r => r.s === 'APPROVED' && (!fresh || r.after === 0)).length
-    const status: PullRequest['status'] = s.draft
-      ? 'draft'
-      : s.conflict ? 'conflict' : reviews.some(r => r.s === 'CHANGES_REQUESTED') ? 'changes' : ok >= approvals ? 'approved' : 'review'
+    let status: PullRequest['status']
+    if (s.draft) status = 'draft'
+    else if (s.conflict) status = 'conflict'
+    else if (reviews.some(r => r.s === 'CHANGES_REQUESTED')) status = 'changes'
+    else if (ok >= approvals && !s.threads?.length) status = 'approved'
+    else status = 'review'
     const n = s.commits.length
     const oldest = Math.max(s.updated + n * 5, ...reviews.filter(r => r.at).map(r => (Date.now() - Date.parse(r.at!)) / H))
     return {
