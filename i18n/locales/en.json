@@ -133,6 +133,10 @@
     "changes": {
       "l": "Changes requested",
       "tip": "At least one reviewer requested changes."
+    },
+    "unresolved": {
+      "l": "Unresolved comments",
+      "tip": "PRs from any author with at least one unresolved review comment. Pick yourself in Authors to keep only yours."
     }
   },
   "summary": {

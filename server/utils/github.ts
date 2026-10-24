@@ -39,7 +39,7 @@ const prFields = (ci: boolean) => `
   ${ci ? 'head: commits(last: 1) { nodes { commit { statusCheckRollup { state } } } }' : ''}
   reviews(last: 40) { nodes { state submittedAt author { login avatarUrl ... on User { name } } commit { oid } } }
   reviewRequests(first: 20) { nodes { requestedReviewer { ... on User { login avatarUrl name } ... on Team { slug } } } }
-  reviewThreads(first: 50) { nodes { id isResolved path line originalLine comments(first: 1) { totalCount nodes { body author { login avatarUrl } } } } }
+  reviewThreads(last: 50) { nodes { id isResolved path line originalLine comments(first: 1) { totalCount nodes { body author { login avatarUrl } } } } }
 `
 
 const query = (ci: boolean) => `query($owner: String!, $name: String!, $cursor: String) {

@@ -3,7 +3,7 @@ import type { Person, PullRequest, Snapshot, SyncSettings } from '#shared/types/
 type Translate = ReturnType<typeof useI18n>['t']
 
 export type Density = 'comfortable' | 'compact' | 'ultra'
-export type QuickKey = 'all' | 'new' | 'mine' | 'approve' | 'requested' | 'conflict' | 'changes'
+export type QuickKey = 'all' | 'new' | 'mine' | 'approve' | 'requested' | 'conflict' | 'changes' | 'unresolved'
 export type ToastKind = 'ok' | 'error' | 'info'
 export interface Toast { id: number, msg: string, sub?: string, kind: ToastKind }
 export interface Avatar extends Person { i: string, h: number }
@@ -155,6 +155,7 @@ const QUICK: { k: QuickKey, f: (p: PullRequest) => boolean, c: string, hot?: boo
   { k: 'requested', f: reviewRequested, c: 'var(--accent-ink)' },
   { k: 'conflict', f: blocking, c: 'var(--bad)', hot: true },
   { k: 'changes', f: p => p.status === 'changes', c: 'var(--warn)' },
+  { k: 'unresolved', f: p => p.threads.length > 0, c: 'var(--bad)' },
 ]
 
 function matches(p: PullRequest) {
