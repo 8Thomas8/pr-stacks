@@ -179,7 +179,7 @@ function normalize(repos: RepoData[], { approvals, fresh }: Pick<SyncOptions, 'a
       if (n.isDraft) status = 'draft'
       else if (n.mergeable === 'CONFLICTING') status = 'conflict'
       else if (n.reviewDecision === 'CHANGES_REQUESTED' || (!n.reviewDecision && reviews.some(x => x.s === 'CHANGES_REQUESTED'))) status = 'changes'
-      else if (reviews.filter(x => x.s === 'APPROVED' && (!fresh || x.after === 0)).length >= approvals) status = 'approved'
+      else if (!threads.length && reviews.filter(x => x.s === 'APPROVED' && (!fresh || x.after === 0)).length >= approvals) status = 'approved'
       else status = 'review'
 
       prs.push({
