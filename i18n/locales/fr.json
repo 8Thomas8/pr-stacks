@@ -133,6 +133,10 @@
     "changes": {
       "l": "Changements demandés",
       "tip": "Au moins un reviewer a demandé des changements."
+    },
+    "unresolved": {
+      "l": "Commentaires non résolus",
+      "tip": "PR de tous les auteurs avec au moins un commentaire de review non résolu. Sélectionne-toi dans Auteurs pour ne garder que les tiennes."
     }
   },
   "summary": {
