@@ -82,9 +82,16 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: ${{ needs.release-please.outputs.tag || inputs.tag }}
     steps:
+      # one file for every OS, so it can only be written once all the installers are attached
+      - name: Attach the checksums to the release
+        run: |
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --dir installers --pattern 'pr-stacks-*'
+          cd installers
+          sha256sum pr-stacks-* | tee SHA256SUMS.txt
+          gh release upload "$TAG" SHA256SUMS.txt --repo "$GITHUB_REPOSITORY" --clobber
       - name: Publish the release
-        env:
-          GH_TOKEN: ${{ github.token }}
-          TAG: ${{ needs.release-please.outputs.tag || inputs.tag }}
         run: gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --draft=false
