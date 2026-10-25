@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PullRequest } from '#shared/types/pr'
 
-const props = defineProps<{ pr: PullRequest }>()
+const props = defineProps<{ pr: PullRequest, total?: boolean }>()
 const { sinceLastReview, showCi } = useStacks()
 const { t, commits } = useFmt()
 const since = computed(() => sinceLastReview(props.pr))
@@ -14,7 +14,7 @@ const unresolved = computed(() => props.pr.threads.length)
       <span class="warn"><Icon name="commit" />+{{ since }}</span>
     </Tip>
     <Tip :text="t('card.threadsTip', { n: unresolved, total: pr.comments }, unresolved)">
-      <span :class="{ bad: unresolved }"><Icon name="thread" />{{ unresolved }}</span>
+      <span :class="{ bad: unresolved }"><Icon name="thread" />{{ unresolved }}<template v-if="total">/{{ pr.comments }}</template></span>
     </Tip>
     <Tip v-if="showCi" :text="t(`ci.tip.${pr.ci}`)">
       <span><i class="ci" :class="pr.ci"></i></span>

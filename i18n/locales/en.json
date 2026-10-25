@@ -66,7 +66,7 @@
     "graph": "Stacks",
     "graphTip": "One PR per card, grouped by stack. Key 1.",
     "list": "List",
-    "listTip": "Compact table, with the stack tree. Key 2.",
+    "listTip": "Compact list, with the stack tree. Key 2.",
     "search": "PR, title, description, branch, label",
     "searchTip": "Press / to search",
     "syncMode": "Sync mode",
@@ -221,24 +221,10 @@
     "open": "Open on GitHub"
   },
   "list": {
-    "pr": "Pull request",
-    "status": "Status",
-    "labels": "Labels",
-    "desc": "Description",
-    "author": "Author",
-    "reviews": "Reviews",
-    "since": "Since latest commit",
+    "by": "by",
+    "fresh": "{names} up to date",
     "sinceTip": "Who reviewed the latest commit, and whose review needs redoing",
-    "comments": "Comments",
-    "ci": "CI · updated",
-    "redo": "{names} to redo",
-    "unresolvedTip": "Unresolved comments",
-    "totalTip": "Total comments",
-    "step1": "Position 1: merge first",
-    "stepN": "Position {n} in the stack",
-    "updated": "Updated",
-    "opened": "Opened",
-    "commentsTip": "Unresolved / total"
+    "redo": "{names} to redo"
   },
   "drawer": {
     "close": "Close",

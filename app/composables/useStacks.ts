@@ -1,4 +1,5 @@
 import type { Person, PullRequest, Snapshot, SyncSettings } from '#shared/types/pr'
+import type { Rel } from '~/utils/stacks'
 
 type Translate = ReturnType<typeof useI18n>['t']
 
@@ -110,6 +111,12 @@ const toApproveByMe = (p: PullRequest) => !p.draft && p.author !== me.value && p
 const reviewRequested = (p: PullRequest) => !p.draft && p.author !== me.value && p.reviews.some(r => r.by === me.value && r.s === 'REQUESTED')
 const blocking = (p: PullRequest) => p.conflict && !p.draft
 const blocks = (p: PullRequest) => prs.value.filter(o => o.dependsOn.includes(p.id))
+const rels = (p: PullRequest): Rel[] => [
+  ...(p.behind ? [{ k: 'behind' as const }] : []),
+  ...p.dependsOn.map(byId).filter((o): o is PullRequest => !!o).map(o => ({ k: 'dep' as const, o })),
+  ...blocks(p).map(o => ({ k: 'block' as const, o })),
+  ...[...p.links].sort((a, b) => Number(a.state === 'merged') - Number(b.state === 'merged')).map(l => ({ k: 'link' as const, l })),
+]
 const forMe = (p: PullRequest) => (toApproveByMe(p) ? 'approve' : reviewRequested(p) ? 'requested' : null)
 function rawPulse(p: PullRequest) {
   if (p.conflict || p.draft) return ''
@@ -384,7 +391,7 @@ function openPrefs(tab: PrefsTab = 'general') {
 export function useStacks() {
   return {
     st, snap, prs, me, repos, tree, forest, visibleBands, QUICK, every,
-    person, byId, submitted, sinceLastReview, toApproveByMe, reviewRequested, forMe, blocking, blocks, pulseClass, hoverSeen, pathHas, matches,
+    person, byId, submitted, sinceLastReview, toApproveByMe, reviewRequested, forMe, blocking, blocks, rels, pulseClass, hoverSeen, pathHas, matches,
     toast, dropToast, setCollapsed, setAllFolded, setFocus, setFolded, refresh, setMode, setCi, setAutoS, setDensity, setView, start, useTranslate, setSettings, openPrefs,
     lean,
     ls,
