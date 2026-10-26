@@ -23,7 +23,12 @@ export function useFmt() {
     if (s < 86400) return t('time.h', { n: Math.floor(s / 3600) })
     return t('time.d', { n: Math.floor(s / 86400) })
   }
+  function stepTip(step?: number, parent?: { num: number }) {
+    if (step === 1) return t('card.step1')
+    if (step && parent) return t('card.stepN', { n: step, parent: parent.num })
+    return ''
+  }
   const since = (kind: 'opened' | 'updated', iso: string, now = Date.now()) =>
     now - Date.parse(iso) < 60e3 ? t(`dates.${kind}Now`) : t(kind === 'opened' ? 'dates.opened' : 'dates.updatedAgo', { ago: rel(iso, now) })
-  return { t, locale, commits, fmtAt, fmtFull, rel, since }
+  return { t, locale, commits, fmtAt, fmtFull, since, stepTip }
 }

@@ -1,6 +1,11 @@
 import type { LinkedPr, PullRequest, RepoInfo } from '#shared/types/pr'
 
 export type Rel = { k: 'behind' } | { k: 'dep' | 'block', o: PullRequest } | { k: 'link', l: LinkedPr }
+export function relKey(r: Rel) {
+  if (r.k === 'behind') return r.k
+  if (r.k === 'link') return r.l.url
+  return r.k + r.o.id
+}
 
 export interface BandBase { id: string, repo: string, name: string }
 export interface Band {
