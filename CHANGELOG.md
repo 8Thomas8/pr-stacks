@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.2.0](https://github.com/8Thomas8/pr-stacks/compare/v0.1.1...v0.2.0) (2026-10-26)
+
+
+### Features
+
+* **list:** rebuild the list view as a GitHub-style list with the stack tree ([#23](https://github.com/8Thomas8/pr-stacks/issues/23)) ([12f6831](https://github.com/8Thomas8/pr-stacks/commit/12f6831384e603716afba3c3afe2617ef69af798))
+* **release:** attach SHA256 checksums to the release assets ([#22](https://github.com/8Thomas8/pr-stacks/issues/22)) ([249b222](https://github.com/8Thomas8/pr-stacks/commit/249b2222b197384da728c6dd3e54878700f126d5))
+* **ui:** add a filter for PRs with unresolved comments ([#19](https://github.com/8Thomas8/pr-stacks/issues/19)) ([8c6e752](https://github.com/8Thomas8/pr-stacks/commit/8c6e7520e7f894d7d418e84a4cf1ba064ede3deb))
+
+
+### Bug Fixes
+
+* **api:** don't mark a PR approved while it has unresolved threads ([#21](https://github.com/8Thomas8/pr-stacks/issues/21)) ([606762e](https://github.com/8Thomas8/pr-stacks/commit/606762e1eb74e5f8f84520fc72cf5ac9a224fe5f))
+
 ## [0.1.1](https://github.com/8Thomas8/pr-stacks/compare/v0.1.0...v0.1.1) (2026-10-23)
 
 
