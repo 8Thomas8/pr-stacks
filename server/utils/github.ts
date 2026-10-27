@@ -35,7 +35,7 @@ const prFields = (ci: boolean) => `
   author { login avatarUrl ... on User { name } }
   labels(first: 20) { nodes { name color description } }
   comments { totalCount }
-  commits(last: 30) { totalCount nodes { commit { oid abbreviatedOid messageHeadline committedDate } } }
+  commits(last: 30) { totalCount nodes { commit { oid abbreviatedOid messageHeadline committedDate authoredDate } } }
   ${ci ? 'head: commits(last: 1) { nodes { commit { statusCheckRollup { state } } } }' : ''}
   reviews(last: 40) { nodes { state submittedAt author { login avatarUrl ... on User { name } } commit { oid } } }
   reviewRequests(first: 20) { nodes { requestedReviewer { ... on User { login avatarUrl name } ... on Team { slug } } } }
@@ -55,7 +55,7 @@ const query = (ci: boolean) => `query($owner: String!, $name: String!, $cursor: 
 }`
 
 interface GhActor { login?: string, slug?: string, name?: string, avatarUrl?: string }
-interface GhCommit { oid: string, abbreviatedOid: string, messageHeadline: string, committedDate: string }
+interface GhCommit { oid: string, abbreviatedOid: string, messageHeadline: string, committedDate: string, authoredDate: string }
 interface GhPr {
   number: number
   title: string
@@ -137,8 +137,9 @@ function normalize(repos: RepoData[], { approvals, fresh }: Pick<SyncOptions, 'a
       const commitsAfter = (rv: GhPr['reviews']['nodes'][number]) => {
         if (rv.commit && idx.has(rv.commit.oid)) return commits.length - 1 - idx.get(rv.commit.oid)!
         const t = Date.parse(rv.submittedAt)
-        const later = commits.filter(c => Date.parse(c.committedDate) > t).length
-        return later || (rv.commit && rv.commit.oid !== n.headRefOid ? 1 : 0)
+        const rewritten = commits.filter(c => Date.parse(c.committedDate) > t).length
+        if (rewritten < commits.length) return rewritten
+        return commits.filter(c => Date.parse(c.authoredDate) > t).length
       }
 
       const author = person(n.author)
