@@ -52,6 +52,7 @@ export interface LinkedPr {
   url: string
   title: string
   state: 'open' | 'draft' | 'merged' | 'closed'
+  ci?: CiState
 }
 
 export interface Person {

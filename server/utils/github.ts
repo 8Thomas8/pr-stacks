@@ -238,9 +238,9 @@ const RETRY_MS = 30 * 60_000
 const MAX_LOOKUPS = 100
 const CONCURRENCY = 4
 
-interface GhLinked { __typename: string, title: string, url: string, isDraft: boolean, state: 'OPEN' | 'CLOSED' | 'MERGED' }
+interface GhLinked extends Pick<GhPr, 'head'> { __typename: string, title: string, url: string, isDraft: boolean, state: 'OPEN' | 'CLOSED' | 'MERGED' }
 
-async function lookupLinks(keys: string[]) {
+async function lookupLinks(keys: string[], ci: boolean) {
   const found = new Map<string, LinkedPr | null>()
   const failed = new Set<string>()
   const bySlug = new Map<string, number[]>()
@@ -268,7 +268,7 @@ async function lookupLinks(keys: string[]) {
       const [repo, nums] = job
       const [owner, name] = repo.split('/') as [string, string]
       const q = `query { rateLimit { cost } repository(owner: ${JSON.stringify(owner)}, name: ${JSON.stringify(name)}) {
-        ${nums.map(n => `n${n}: issueOrPullRequest(number: ${n}) { __typename ... on PullRequest { title url isDraft state } }`).join('\n')}
+        ${nums.map(n => `n${n}: issueOrPullRequest(number: ${n}) { __typename ... on PullRequest { title url isDraft state ${ci ? 'head: commits(last: 1) { nodes { commit { statusCheckRollup { state } } } }' : ''} } }`).join('\n')}
       } }`
       try {
         const res = await gh<{ data: { rateLimit?: { cost: number }, repository: Record<string, GhLinked | null> | null } }>(['api', 'graphql', '-f', `query=${q}`], { partial: true })
@@ -276,7 +276,7 @@ async function lookupLinks(keys: string[]) {
         cost += res.data.rateLimit?.cost ?? 0
         for (const n of nums) {
           const x = res.data.repository[`n${n}`]
-          const link = x?.__typename === 'PullRequest' ? { ref: `${x.url.split('/')[4]}#${n}`, url: x.url, title: x.title, state: x.state === 'OPEN' && x.isDraft ? 'draft' : x.state.toLowerCase() as LinkedPr['state'] } : null
+          const link = x?.__typename === 'PullRequest' ? { ref: `${x.url.split('/')[4]}#${n}`, url: x.url, title: x.title, state: x.state === 'OPEN' && x.isDraft ? 'draft' : x.state.toLowerCase() as LinkedPr['state'], ci: ci ? CI[x.head?.nodes[0]?.commit.statusCheckRollup?.state ?? ''] || 'none' : undefined } : null
           found.set(`${repo}#${n}`, link)
           if (!link || link.state === 'merged') linkCache.set(`${repo}#${n}`, link)
         }
@@ -306,7 +306,7 @@ export function getSnapshot(opts: SyncOptions): Promise<Snapshot> {
     })
     const repos = await Promise.all(refs.map(r => fetchRepo(r, ci)))
     const { prs, people, labels, elsewhere } = normalize(repos, opts)
-    const links = await lookupLinks([...elsewhere.values()].flat())
+    const links = await lookupLinks([...elsewhere.values()].flat(), ci)
     for (const [p, keys] of elsewhere) {
       p.links = keys.map(k => links.found.get(k)).filter((l): l is LinkedPr => !!l)
     }

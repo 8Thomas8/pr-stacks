@@ -91,8 +91,6 @@
     "authors": "Auteurs",
     "legend": "Légende reviews",
     "noLabels": "Aucun label",
-    "hideDrafts": "Masquer les drafts",
-    "hideDraftsTip": "Cache les PR marquées Draft sur GitHub.",
     "rate": "Quota gh · {remaining} / {limit} pts/h",
     "rateTip": "Quota GitHub restant sur l’heure pour les appels gh api. La dernière synchro de {repos} a coûté {points}.",
     "legendItems": {
@@ -114,29 +112,17 @@
       "l": "Nouveautés",
       "tip": "PR encore surlignées parce qu’elles demandent ton attention (review à faire, changements demandés). Celles que tu survoles ou ouvres ici restent listées jusqu’à ce que tu quittes cette vue."
     },
+    "review": {
+      "l": "À reviewer",
+      "tip": "PR d’autres auteurs où ta review est demandée, ou que tu as déjà reviewées et qui ont reçu des commits depuis."
+    },
     "mine": {
       "l": "Mes PR",
       "tip": "Les PR dont tu es l’auteur."
     },
-    "approve": {
-      "l": "À approuver par moi",
-      "tip": "PR d’autres auteurs que tu as déjà reviewées et qui ont reçu des commits après ta review (ou où ta review a été redemandée)."
-    },
-    "requested": {
-      "l": "Review demandée",
-      "tip": "PR où ta review est demandée et que tu n’as encore jamais reviewées."
-    },
-    "conflict": {
-      "l": "En conflit",
-      "tip": "PR ouvertes (hors drafts) que GitHub ne peut pas merger dans leur base sans rebase."
-    },
-    "changes": {
-      "l": "Changements demandés",
-      "tip": "Au moins un reviewer a demandé des changements."
-    },
-    "unresolved": {
-      "l": "Commentaires non résolus",
-      "tip": "PR de tous les auteurs avec au moins un commentaire de review non résolu. Sélectionne-toi dans Auteurs pour ne garder que les tiennes."
+    "rework": {
+      "l": "Mes PR à reprendre",
+      "tip": "Tes PR avec des changements demandés, des commentaires non résolus ou un conflit avec leur base."
     }
   },
   "summary": {
@@ -206,6 +192,7 @@
     "draftConflict": "Conflit",
     "draftConflictTip": "Draft en conflit avec sa base : à rebaser avant de la passer en ready. Pas urgent tant qu’elle est en draft.",
     "mentions": "Mentionne",
+    "mentionsN": "Mentionne {n} PR",
     "moreLinks": "+{n} autre | +{n} autres"
   },
   "review": {
@@ -300,6 +287,8 @@
     },
     "ci": "Récupérer le statut de CI",
     "ciHint": "Requêtes GitHub plus lourdes",
+    "hideDrafts": "Masquer les drafts",
+    "hideDraftsHint": "Cache les PR marquées Draft sur GitHub.",
     "ciOn": "Statut de CI activé",
     "ciOff": "Statut de CI désactivé",
     "display": "Affichage",
