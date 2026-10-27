@@ -125,10 +125,10 @@ function rawPulse(p: PullRequest) {
   return ''
 }
 function pulseKey(p: PullRequest, cls: string) {
-  if (cls === 'pulse-changes') return JSON.stringify([cls, p.headOid, p.reviews.filter(r => r.s === 'CHANGES_REQUESTED').map(r => r.by)])
+  if (cls === 'pulse-changes') return JSON.stringify([cls, p.reviews.filter(r => r.s === 'CHANGES_REQUESTED').map(r => [r.by, r.after])])
   const kind = forMe(p)
   const mine = p.reviews.find(r => r.by === me.value)
-  return JSON.stringify([kind, kind === 'approve' && p.headOid, mine?.s, !!mine?.rerequested])
+  return JSON.stringify([kind, kind === 'approve' && mine?.after, mine?.s, !!mine?.rerequested])
 }
 function pulseClass(p: PullRequest) {
   const cls = rawPulse(p)
