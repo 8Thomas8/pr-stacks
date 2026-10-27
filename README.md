@@ -69,12 +69,12 @@ npm run icons      # regenerate the PNG icons from build/icon.svg and build/tray
 
 - Drafts are faded and left out of the "to approve" / "in conflict" counts.
 - A PR counts as approved once it has the number of approvals set in Preferences → Repositories (only approvals with no commit after them, if that option is on). GitHub's own review rule is not used for this; "changes requested" still comes from GitHub.
-- "To approve by me": PRs you reviewed that got new commits since, or where your review was requested again.
+- Views: all PRs, new (what needs you and you haven't looked at yet), to review (your review is requested, or you reviewed and new commits came since), my PRs, and my PRs to rework (changes requested, unresolved comments or a conflict).
 - The `+N` next to a reviewer is the number of commits pushed after their review.
-- Any PR mentioned in a description (`#123`, `repo#123` for a tracked repo, `owner/repo#123` or a GitHub URL) is shown as a dependency, across repos too. Mentioned PRs that are merged, closed or outside the tracked repos come with their state: one more `gh api` call per mentioned repo, merged ones are cached.
-- Descriptions are rendered as GitHub markdown in the PR details.
-- Preferences (`Ctrl+,` / `⌘,`): language, theme, density (normal; compact keeps the sizes and drops descriptions and links; ultra compact also shrinks everything), repositories and rules, auto sync interval (2 min by default, from 30 s to 10 min), CI status, notifications, tray and login behaviour, GitHub CLI status.
-- CI status is off by default: it makes each `gh api` call a lot heavier.
+- Any PR mentioned in a description (`#123`, `repo#123` for a tracked repo, `owner/repo#123` or a GitHub URL) is shown as a dependency, across repos too. Mentioned PRs that are merged, closed or outside the tracked repos come with their state: one more `gh api` call per mentioned repo, merged ones are cached. Two mentions or more are grouped under "Mentions N PRs": hover it to list them with their state (and CI status when it is on), click one to open it on GitHub.
+- Descriptions are rendered as GitHub markdown, on cards and list rows (shortened) and in full in the PR details.
+- Preferences (`Ctrl+,` / `⌘,`): language, theme, density (normal; compact keeps the sizes and drops descriptions and links; ultra compact also shrinks everything), hide drafts, repositories and rules, auto sync interval (2 min by default, from 30 s to 10 min), CI status, notifications, tray and login behaviour, GitHub CLI status.
+- CI status is off by default: it makes each `gh api` call a lot heavier. When on, it is also fetched for mentioned PRs.
 - Filter and detail sections fold, and stay folded across reloads.
 - Isolate a PR's lineage (its parents down to the base branch and the PRs stacked on it) from the PR details. It stays isolated across reloads; if the PR is merged or closed, the lineage moves to the next open PR in it.
 - Shortcuts: `/` search, `R` refresh, `1` / `2` switch view, `F` isolate the open PR's lineage, `Esc` close or show all PRs again. With `Ctrl` (`⌘` on macOS): `R` refresh, `F` search, `,` preferences, `1` / `2` views, `+` / `-` / `0` zoom.
