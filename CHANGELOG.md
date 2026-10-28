@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.0](https://github.com/8Thomas8/pr-stacks/compare/v0.2.0...v0.3.0) (2026-10-28)
+
+
+### Features
+
+* **api:** ignore rebase-only pushes when flagging stale reviews ([#24](https://github.com/8Thomas8/pr-stacks/issues/24)) ([74d308c](https://github.com/8Thomas8/pr-stacks/commit/74d308c927b69698f7a65492e76d8863516e72b2))
+* **ui:** lighten the list, cards and filters ([#26](https://github.com/8Thomas8/pr-stacks/issues/26)) ([45ca280](https://github.com/8Thomas8/pr-stacks/commit/45ca28018a3b8fa412c929146b61e2154ac525be))
+
 ## [0.2.0](https://github.com/8Thomas8/pr-stacks/compare/v0.1.1...v0.2.0) (2026-10-26)
 
 
