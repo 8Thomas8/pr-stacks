@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { PullRequest } from '#shared/types/pr'
-import type { Band } from '~/utils/stacks'
+import type { Band, Rel } from '~/utils/stacks'
 
 const { st, lean, visibleBands, forest, matches, pulseClass, hoverSeen, submitted, person, setCollapsed, blocking, rels } = useStacks()
 const { t, fmtFull, since, stepTip } = useFmt()
+const notes = (rs: Rel[]) => (rs.filter(r => r.k === 'link').length > 1 ? rs.filter(r => r.k !== 'link') : rs)
 
 function rows(b: Band) {
   const out: { p: PullRequest, step?: number, depth: number, parent?: PullRequest, pipes: number[], last: boolean, hasKids: boolean }[] = []
@@ -45,7 +46,7 @@ function toggle(b: Band, e: MouseEvent) {
           v-for="{ p, step, depth, parent, pipes, last, hasKids, rels: pRels, fresh, stale } in bandRows.get(b.key)"
           :key="p.id"
           class="row"
-          :class="[{ 'conflict': blocking(p), 'draft': p.draft, 'draft-conflict': p.draft && p.conflict, 'flash': st.changed.has(p.id), 'sel': st.sel === p.id }, pulseClass(p)]"
+          :class="[{ 'root': !depth, 'conflict': blocking(p), 'draft': p.draft, 'draft-conflict': p.draft && p.conflict, 'flash': st.changed.has(p.id), 'sel': st.sel === p.id }, pulseClass(p)]"
           :style="{ '--d': depth }"
           tabindex="0"
           :aria-labelledby="`l-${p.id}`"
@@ -84,7 +85,8 @@ function toggle(b: Band, e: MouseEvent) {
             <div class="l-extra">
               <RelFlag v-if="lean && pRels.length" :rels="pRels" :pr="p" :parent="parent" />
               <template v-else-if="!lean">
-                <RelNote v-for="r in pRels" :key="relKey(r)" :rel="r" :pr="p" :parent="parent" />
+                <RelNote v-for="r in notes(pRels)" :key="relKey(r)" :rel="r" :pr="p" :parent="parent" />
+                <MentionsNote :rels="pRels" :pr="p" :parent="parent" />
                 <PrDesc :body="p.body" />
               </template>
             </div>

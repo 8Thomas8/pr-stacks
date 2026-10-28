@@ -9,8 +9,11 @@ const open = (id: string) => {
 }
 const p = computed(() => props.pr)
 const rels = computed(() => relsOf(p.value))
-const shown = computed(() => (rels.value.length > 2 ? rels.value.slice(0, 1) : rels.value))
-const more = computed(() => rels.value.slice(shown.value.length))
+const grouped = computed(() => rels.value.filter(r => r.k === 'link').length > 1)
+const notes = computed(() => (grouped.value ? rels.value.filter(r => r.k !== 'link') : rels.value))
+const slots = computed(() => notes.value.length + (grouped.value ? 1 : 0))
+const shown = computed(() => (slots.value > 2 ? notes.value.slice(0, 1) : notes.value))
+const more = computed(() => (slots.value > 2 ? rels.value.filter(r => !shown.value.includes(r)) : []))
 </script>
 
 <template>
@@ -40,7 +43,7 @@ const more = computed(() => rels.value.slice(shown.value.length))
       </Tip>
       <StatusPill :status="p.status" />
     </header>
-    <div class="c-main" :class="{ 'has-notes': !lean && rels.length, 'has-notes-2': !lean && shown.length + (more.length ? 1 : 0) >= 2 }">
+    <div class="c-main" :class="{ 'has-notes': !lean && rels.length, 'has-notes-2': !lean && slots >= 2 }">
       <h3 :id="`t-${p.id}`" class="c-title">{{ p.title }}</h3>
       <div class="byline">
         <AuthorChip :login="p.author" />
@@ -53,6 +56,7 @@ const more = computed(() => rels.value.slice(shown.value.length))
       <PrDesc v-if="!lean" :body="p.body" />
       <div v-if="!lean && rels.length" class="notes">
         <RelNote v-for="r in shown" :key="relKey(r)" :rel="r" :pr="p" :parent="parent" />
+        <MentionsNote v-if="!more.length" :rels="rels" :pr="p" :parent="parent" />
         <Tip v-if="more.length">
           <div class="note more">{{ t('card.moreLinks', { n: more.length }, more.length) }}</div>
           <template #content>

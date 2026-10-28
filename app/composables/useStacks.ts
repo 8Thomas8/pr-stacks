@@ -4,7 +4,7 @@ import type { Rel } from '~/utils/stacks'
 type Translate = ReturnType<typeof useI18n>['t']
 
 export type Density = 'comfortable' | 'compact' | 'ultra'
-export type QuickKey = 'all' | 'new' | 'mine' | 'approve' | 'requested' | 'conflict' | 'changes' | 'unresolved'
+export type QuickKey = 'all' | 'new' | 'review' | 'mine' | 'rework'
 export type ToastKind = 'ok' | 'error' | 'info'
 export interface Toast { id: number, msg: string, sub?: string, kind: ToastKind }
 export interface Avatar extends Person { i: string, h: number }
@@ -55,7 +55,7 @@ const st = reactive({
   repos: new Set<string>(),
   authors: new Set<string>(),
   labels: new Set<string>(),
-  hideDrafts: false,
+  hideDrafts: ls.get('stacks-hide-drafts') === 'on',
   sel: null as string | null,
   focus: readFocus(),
   hover: null as string | null,
@@ -157,12 +157,9 @@ function pathHas(fromId: string | null, id: string) {
 const QUICK: { k: QuickKey, f: (p: PullRequest) => boolean, c: string, hot?: boolean }[] = [
   { k: 'all', f: () => true, c: 'var(--line-strong)' },
   { k: 'new', f: p => !!pulseClass(p), c: 'var(--violet)', hot: true },
-  { k: 'mine', f: p => p.author === me.value, c: 'var(--accent)' },
-  { k: 'approve', f: toApproveByMe, c: 'var(--violet)', hot: true },
-  { k: 'requested', f: reviewRequested, c: 'var(--accent-ink)' },
-  { k: 'conflict', f: blocking, c: 'var(--bad)', hot: true },
-  { k: 'changes', f: p => p.status === 'changes', c: 'var(--warn)' },
-  { k: 'unresolved', f: p => p.threads.length > 0, c: 'var(--bad)' },
+  { k: 'review', f: p => !!forMe(p), c: 'var(--accent)', hot: true },
+  { k: 'mine', f: p => p.author === me.value, c: 'var(--accent-ink)' },
+  { k: 'rework', f: p => p.author === me.value && (p.status === 'changes' || p.threads.length > 0 || p.conflict), c: 'var(--warn)', hot: true },
 ]
 
 function matches(p: PullRequest) {
@@ -351,6 +348,10 @@ function setCi(on: boolean) {
   toast(on ? t('options.ciOn') : t('options.ciOff'), undefined, 'ok')
   refresh({ silent: true })
 }
+function setHideDrafts(on: boolean) {
+  st.hideDrafts = on
+  ls.set('stacks-hide-drafts', on ? 'on' : 'off')
+}
 function setDensity(d: Density) {
   st.density = d
   ls.set('stacks-density', d)
@@ -392,7 +393,7 @@ export function useStacks() {
   return {
     st, snap, prs, me, repos, tree, forest, visibleBands, QUICK, every,
     person, byId, submitted, sinceLastReview, toApproveByMe, reviewRequested, forMe, blocking, blocks, rels, pulseClass, hoverSeen, pathHas, matches,
-    toast, dropToast, setCollapsed, setAllFolded, setFocus, setFolded, refresh, setMode, setCi, setAutoS, setDensity, setView, start, useTranslate, setSettings, openPrefs,
+    toast, dropToast, setCollapsed, setAllFolded, setFocus, setFolded, refresh, setMode, setCi, setAutoS, setDensity, setHideDrafts, setView, start, useTranslate, setSettings, openPrefs,
     lean,
     ls,
     showCi: computed(() => !!snap.value?.ci),

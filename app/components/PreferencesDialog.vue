@@ -3,7 +3,7 @@ import { DialogClose, DialogContent, DialogDescription, DialogOverlay, DialogPor
 import type { SyncSettings } from '#shared/types/pr'
 import type { IconName } from './Icon.vue'
 
-const { st, every, toast, setSettings, setCi, setAutoS, setDensity } = useStacks()
+const { st, every, toast, setSettings, setCi, setAutoS, setDensity, setHideDrafts } = useStacks()
 const { ds, desktop, checkGh, setTheme, setNotify, setNotifyKind, setBadge, testNotification, setAppPref } = useDesktop()
 const { t, locale, locales, setLocale } = useI18n()
 
@@ -29,6 +29,7 @@ const lang = computed({
 const theme = computed({ get: () => ds.theme, set: setTheme })
 const DENSITIES = ['comfortable', 'compact', 'ultra'] as const
 const density = computed({ get: () => st.density, set: (v: string) => setDensity(v as Density) })
+const hideDrafts = computed({ get: () => st.hideDrafts, set: setHideDrafts })
 
 /* sync */
 const autoS = computed({ get: () => String(st.autoS), set: (v: string) => setAutoS(Number(v)) })
@@ -140,6 +141,10 @@ async function recheck() {
                     <span class="menu-t"><span>{{ t(`options.density.${d}`) }}</span><small>{{ t(`options.density.${d}Hint`) }}</small></span>
                   </RadioGroupItem>
                 </RadioGroupRoot>
+                <label class="field toggle">
+                  <span class="menu-t"><span>{{ t('options.hideDrafts') }}</span><small>{{ t('options.hideDraftsHint') }}</small></span>
+                  <SwitchRoot v-model="hideDrafts" class="switch" :aria-label="t('options.hideDrafts')"><SwitchThumb class="switch-thumb" /></SwitchRoot>
+                </label>
               </section>
             </TabsContent>
 

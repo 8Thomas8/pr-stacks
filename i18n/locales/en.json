@@ -91,8 +91,6 @@
     "authors": "Authors",
     "legend": "Review legend",
     "noLabels": "No labels",
-    "hideDrafts": "Hide drafts",
-    "hideDraftsTip": "Hides PRs marked as Draft on GitHub.",
     "rate": "gh quota · {remaining} / {limit} pts/h",
     "rateTip": "GitHub quota left this hour for gh api calls. The last sync of {repos} cost {points}.",
     "legendItems": {
@@ -114,29 +112,17 @@
       "l": "New",
       "tip": "PRs still highlighted because they need your attention (review to do, changes requested). The ones you hover or open here stay listed until you leave this view."
     },
+    "review": {
+      "l": "To review",
+      "tip": "Other people’s PRs where your review is requested, or that you already reviewed and got commits since."
+    },
     "mine": {
       "l": "My PRs",
       "tip": "PRs you authored."
     },
-    "approve": {
-      "l": "Awaiting my approval",
-      "tip": "Other people's PRs you already reviewed that got commits after your review (or where your review was requested again)."
-    },
-    "requested": {
-      "l": "Review requested",
-      "tip": "PRs where your review is requested and that you never reviewed."
-    },
-    "conflict": {
-      "l": "In conflict",
-      "tip": "Open PRs (drafts excluded) that GitHub cannot merge into their base without a rebase."
-    },
-    "changes": {
-      "l": "Changes requested",
-      "tip": "At least one reviewer requested changes."
-    },
-    "unresolved": {
-      "l": "Unresolved comments",
-      "tip": "PRs from any author with at least one unresolved review comment. Pick yourself in Authors to keep only yours."
+    "rework": {
+      "l": "My PRs to rework",
+      "tip": "Your PRs with changes requested, unresolved comments or a conflict with their base."
     }
   },
   "summary": {
@@ -206,6 +192,7 @@
     "draftConflict": "Conflict",
     "draftConflictTip": "Draft in conflict with its base: rebase before marking it ready. Not urgent while it is a draft.",
     "mentions": "Mentions",
+    "mentionsN": "Mentions {n} PRs",
     "moreLinks": "+{n} more | +{n} more"
   },
   "review": {
@@ -300,6 +287,8 @@
     },
     "ci": "Fetch CI status",
     "ciHint": "Heavier GitHub queries",
+    "hideDrafts": "Hide drafts",
+    "hideDraftsHint": "Hides PRs marked as Draft on GitHub.",
     "ciOn": "CI status enabled",
     "ciOff": "CI status disabled",
     "display": "Display",

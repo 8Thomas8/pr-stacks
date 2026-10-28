@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { SwitchRoot, SwitchThumb } from 'reka-ui'
-
 const { st, snap, prs, me, repos, QUICK, label, person } = useStacks()
 const { t, locale } = useI18n()
 const usedLabels = computed(() => [...new Set(prs.value.flatMap(p => p.labels))].sort((a, b) => a.localeCompare(b, locale.value)))
@@ -35,7 +33,7 @@ const num = (n: number) => n.toLocaleString(locale.value)
     <FoldSection k="rail:repos" :title="t('rail.repos')" :active="st.repos.size">
       <div class="chips">
         <Tip v-for="r in repos" :key="r.key" :text="r.slug">
-          <button class="chip plain" :aria-pressed="st.repos.has(r.key)" @click="toggle(st.repos, r.key)"><span class="chip-t">{{ r.key }}</span></button>
+          <button class="chip" :aria-pressed="st.repos.has(r.key)" @click="toggle(st.repos, r.key)"><span class="chip-t">{{ r.key }}</span></button>
         </Tip>
       </div>
     </FoldSection>
@@ -55,12 +53,6 @@ const num = (n: number) => n.toLocaleString(locale.value)
         <div><span class="av stale" data-s="APPROVED" style="--h:222">AB</span><b class="rvn">+2</b>{{ t('rail.legendItems.stale') }}</div>
       </div>
     </FoldSection>
-    <label class="toggle" :class="{ on: st.hideDrafts }">
-      <span>{{ t('rail.hideDrafts') }}</span>
-      <Tip :text="t('rail.hideDraftsTip')">
-        <SwitchRoot v-model="st.hideDrafts" class="switch" :aria-label="t('rail.hideDrafts')"><SwitchThumb class="switch-thumb" /></SwitchRoot>
-      </Tip>
-    </label>
     <Tip v-if="rate" :text="t('rail.rateTip', { repos: t('n.repos', repos.length), points: t('n.points', cost) })">
       <div class="rate" tabindex="0">
         {{ t('rail.rate', { remaining: num(rate.remaining), limit: num(rate.limit) }) }}
