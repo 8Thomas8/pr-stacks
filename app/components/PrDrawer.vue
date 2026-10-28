@@ -4,6 +4,7 @@ import type { LinkedPr, PullRequest, Review } from '#shared/types/pr'
 
 const { st, byId, tree, submitted, sinceLastReview, blocks, person, toast, showCi, setFocus } = useStacks()
 const { t, commits, fmtAt, fmtFull, since } = useFmt()
+const { readPr } = useDesktop()
 
 const last = shallowRef<PullRequest>()
 const p = computed(() => (st.sel ? byId(st.sel) : undefined) ?? last.value)
@@ -178,11 +179,11 @@ function copyBranch() {
         </div>
 
         <div class="d-actions">
-          <a class="btn primary" :href="p.url" target="_blank" rel="noopener"><Icon name="ext" />{{ t('link.open') }}</a>
+          <a class="btn primary" :href="p.url" target="_blank" rel="noopener" @click="readPr(p)"><Icon name="ext" />{{ t('link.open') }}</a>
           <Tip :text="t('focus.tip')">
             <button class="btn" @click="setFocus(p.id); st.sel = null"><Icon name="focus" />{{ t('focus.isolate') }}<kbd>F</kbd></button>
           </Tip>
-          <a class="btn" :href="`${p.url}/files`" target="_blank" rel="noopener">{{ t('drawer.files') }}</a>
+          <a class="btn" :href="`${p.url}/files`" target="_blank" rel="noopener" @click="readPr(p)">{{ t('drawer.files') }}</a>
           <Tip :text="t('drawer.copyTip')">
             <button class="btn" @click="copyBranch"><Icon name="copy" />{{ t('drawer.copy') }}</button>
           </Tip>

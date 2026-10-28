@@ -71,6 +71,7 @@ const sub = computed(() => (st.mode === 'auto' ? t('toolbar.next', { n: `${Math.
         </button>
       </Tip>
     </div>
+    <NotifyCenter />
     <Tip :text="t('prefs.tip')" side="bottom">
       <button class="theme-btn" :aria-label="t('prefs.title')" @click="openPrefs()"><Icon name="options" /></button>
     </Tip>

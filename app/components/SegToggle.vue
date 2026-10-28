@@ -9,19 +9,25 @@ const thumb = reactive({ left: 0, width: 0 })
 
 function place() {
   const el = root.value?.$el as HTMLElement | undefined
-  const on = el?.querySelector<HTMLElement>('[data-state="on"]')
+  const on = el?.querySelector<HTMLElement>('[aria-pressed="true"]')
   if (on) {
     thumb.left = on.offsetLeft
     thumb.width = on.offsetWidth
   }
 }
 watch(model, () => nextTick(place))
+// a label that changes width ("Activity · 3" → "Activity", a new language) moves its neighbours
+const sized = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(() => place())
 onMounted(() => {
   nextTick(place)
   document.fonts?.ready.then(place)
   window.addEventListener('resize', place)
+  for (const b of (root.value?.$el as HTMLElement | undefined)?.querySelectorAll('button') ?? []) sized?.observe(b)
 })
-onBeforeUnmount(() => window.removeEventListener('resize', place))
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', place)
+  sized?.disconnect()
+})
 const onUpdate = (v: unknown) => {
   if (typeof v === 'string' && v) model.value = v as T
 }
