@@ -109,7 +109,7 @@ kbd { font: 500 11px/1 var(--f-mono); color: var(--faint); border: 1px solid var
 .qv button:hover { background: var(--sunken); color: var(--ink); }
 .qv button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent-ink); font-weight: 600; }
 .qv .n { margin-left: auto; font: 500 12px/1 var(--f-mono); color: var(--faint); }
-.qv button[aria-pressed="true"] .n { color: var(--accent-ink); }
+.qv button[aria-pressed="true"] .n:not(.hot) { color: var(--accent-ink); }
 .qv .n.hot { color: var(--on-bad); background: var(--bad); padding: 3px 6px; border-radius: 99px; }
 .qv .sw { width: 8px; height: 8px; border-radius: 3px; flex: none; }
 .chips { display: grid; gap: 2px; }
