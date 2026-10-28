@@ -112,6 +112,10 @@
       "l": "Nouveautés",
       "tip": "PR encore surlignées parce qu’elles demandent ton attention (review à faire, changements demandés). Celles que tu survoles ou ouvres ici restent listées jusqu’à ce que tu quittes cette vue."
     },
+    "gh": {
+      "l": "Notifs GitHub",
+      "tip": "PR avec des notifications GitHub non lues. L’ouvrir sur GitHub, ou ✓ dans son panneau, les marque comme lues ; elle reste listée jusqu’à ce que tu quittes cette vue."
+    },
     "review": {
       "l": "À reviewer",
       "tip": "PR d’autres auteurs où ta review est demandée, ou que tu as déjà reviewées et qui ont reçu des commits depuis."
@@ -214,6 +218,7 @@
     "redo": "{names} à refaire"
   },
   "drawer": {
+    "ghUnread": "{n} notification GitHub non lue : | {n} notifications GitHub non lues :",
     "close": "Fermer",
     "closeTip": "Fermer (Échap)",
     "baseBranch": "Branche de base",

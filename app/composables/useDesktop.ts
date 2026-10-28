@@ -235,6 +235,8 @@ function openInbox(i: InboxItem) {
 const prInbox = (p: PullRequest) => center.inbox.filter(i => samePr(i)(p))
 // a PR opened on GitHub from the dashboard: its notifications are seen there
 function readPr(p: PullRequest) {
+  const { st } = useStacks()
+  if (st.quick === 'gh') st.kept.add(p.id)
   for (const i of prInbox(p)) readThread(i.id)
 }
 // What the dashboard already told: the PR is no longer open (a mention or a comment stays, the dashboard

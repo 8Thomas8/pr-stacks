@@ -4,7 +4,7 @@ import type { LinkedPr, PullRequest, Review } from '#shared/types/pr'
 
 const { st, byId, tree, submitted, sinceLastReview, blocks, person, toast, showCi, setFocus } = useStacks()
 const { t, commits, fmtAt, fmtFull, since } = useFmt()
-const { readPr } = useDesktop()
+const { prInbox, readPr, inboxText } = useDesktop()
 
 const last = shallowRef<PullRequest>()
 const p = computed(() => (st.sel ? byId(st.sel) : undefined) ?? last.value)
@@ -86,6 +86,12 @@ function copyBranch() {
             <Tip :text="t('dates.created', { at: fmtFull(p.createdAt) })"><time :datetime="p.createdAt">{{ since('opened', p.createdAt, st.now) }}</time></Tip>·
             <Tip :text="t('dates.updated', { at: fmtFull(p.updatedAt) })"><time :datetime="p.updatedAt">{{ since('updated', p.updatedAt, st.now) }}</time></Tip>
           </DialogDescription>
+          <div v-if="prInbox(p).length" class="d-gh">
+            <Icon name="bell" /><span><b>{{ t('drawer.ghUnread', { n: prInbox(p).length }, prInbox(p).length) }}</b> {{ prInbox(p).map(inboxText).join(' · ') }}</span>
+            <Tip :text="t('center.markRead')">
+              <button class="nc-read" :aria-label="t('center.markRead')" @click="readPr(p)"><Icon name="check" /></button>
+            </Tip>
+          </div>
           <div v-if="p.conflict" class="d-conf">
             <Icon name="conflict" /><span><b>{{ t('drawer.conflictTitle', { base: p.base }) }}</b> {{ t('drawer.conflictText') }}</span>
           </div>

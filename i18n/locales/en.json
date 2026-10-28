@@ -112,6 +112,10 @@
       "l": "New",
       "tip": "PRs still highlighted because they need your attention (review to do, changes requested). The ones you hover or open here stay listed until you leave this view."
     },
+    "gh": {
+      "l": "GitHub notifications",
+      "tip": "PRs with unread GitHub notifications. Opening one on GitHub, or ✓ in its drawer, marks them read; it stays listed until you leave this view."
+    },
     "review": {
       "l": "To review",
       "tip": "Other people’s PRs where your review is requested, or that you already reviewed and got commits since."
@@ -214,6 +218,7 @@
     "redo": "{names} to redo"
   },
   "drawer": {
+    "ghUnread": "{n} unread GitHub notification: | {n} unread GitHub notifications:",
     "close": "Close",
     "closeTip": "Close (Esc)",
     "baseBranch": "Base branch",
