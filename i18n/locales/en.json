@@ -146,9 +146,13 @@
   },
   "band": {
     "stack": "Stack · {n} PR | Stack · {n} PRs",
+    "stackPart": "Stack · {shown}/{n} PR | Stack · {shown}/{n} PRs",
     "stackTip": "Stacked PRs: each one targets the branch of the previous one",
     "solo": "Independent · {n} PR | Independent · {n} PRs",
+    "soloPart": "Independent · {shown}/{n} PR | Independent · {shown}/{n} PRs",
     "soloTip": "PRs that target the main branch directly, with nothing stacked on them",
+    "hiddenTip": "{n} hidden by the filters",
+    "gapTip": "{n} PR hidden by the filters: {list} | {n} PRs hidden by the filters: {list}",
     "baseTip": "Base branch in {repo}",
     "alert": "{n} PR in conflict | {n} PRs in conflict",
     "alertTip": "In conflict: {list}",

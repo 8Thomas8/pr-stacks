@@ -2,20 +2,20 @@
 import type { Band } from '~/utils/stacks'
 
 const props = defineProps<{ band: Band }>()
-const { toApproveByMe, reviewRequested, blocking, repoSlug } = useStacks()
+const { toApproveByMe, reviewRequested, blocking, repoSlug, matches } = useStacks()
 const { t } = useI18n()
-const conflicts = computed(() => props.band.items.filter(blocking))
-const draftConflicts = computed(() => props.band.items.filter(p => p.draft && p.conflict))
-const forMe = computed(() => props.band.items.filter(p => toApproveByMe(p) || reviewRequested(p)).length)
+const items = computed(() => props.band.items.filter(matches))
+const conflicts = computed(() => items.value.filter(blocking))
+const draftConflicts = computed(() => items.value.filter(p => p.draft && p.conflict))
+const forMe = computed(() => items.value.filter(p => toApproveByMe(p) || reviewRequested(p)).length)
 const n = computed(() => props.band.items.length)
+const hidden = computed(() => n.value - items.value.length)
 </script>
 
 <template>
-  <Tip v-if="band.kind === 'stack'" :text="t('band.stackTip')">
-    <span class="band-kind">{{ t('band.stack', { n }, n) }}</span>
-  </Tip>
-  <Tip v-else :text="t('band.soloTip')">
-    <span class="band-kind">{{ t('band.solo', { n }, n) }}</span>
+  <Tip>
+    <span class="band-kind">{{ t(`band.${band.kind}${hidden ? 'Part' : ''}`, { n, shown: items.length }, n) }}</span>
+    <template #content>{{ t(`band.${band.kind}Tip`) }}<template v-if="hidden"><br />{{ t('band.hiddenTip', { n: hidden }, hidden) }}</template></template>
   </Tip>
   <Tip>
     <span class="band-base"><RepoLink :repo="band.base.repo"><b>{{ band.base.repo }}</b></RepoLink><code>{{ band.base.name }}</code></span>

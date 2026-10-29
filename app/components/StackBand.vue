@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { CollapsibleContent, CollapsibleRoot } from 'reka-ui'
+import type { PullRequest } from '#shared/types/pr'
 import type { Band } from '~/utils/stacks'
 
 const props = defineProps<{ band: Band, index: number }>()
-const { st, forest, matches, pathHas, setCollapsed, blocking } = useStacks()
+const { st, forest, matches, visible, between, pathHas, setCollapsed, blocking } = useStacks()
 const { t } = useI18n()
 
 const DIMS = {
@@ -23,32 +24,46 @@ const layout = computed(() => {
   if (props.band.kind !== 'stack') return null
   const { CW, CH, GX, GY, EY } = dims.value
   const pos: Record<string, { x: number, y: number }> = {}
+  const from: Record<string, string> = {}
   let y = 0, maxX = 0
   const place = (id: string, depth: number) => {
     const x = depth * (CW + GX)
     maxX = Math.max(maxX, x + CW)
-    const ch = forest.value.kids(id)
+    const ch = visible(forest.value.kids(id))
     if (!ch.length) {
       pos[id] = { x, y }
       y += CH + GY
       return
     }
-    ch.forEach(c => place(c.id, depth + 1))
+    ch.forEach((c) => {
+      from[c.id] = id
+      place(c.id, depth + 1)
+    })
     pos[id] = { x, y: (pos[ch[0]!.id]!.y + pos[ch[ch.length - 1]!.id]!.y) / 2 }
   }
-  props.band.tops.forEach(t => place(t.id, 0))
+  visible(props.band.tops).forEach(t => place(t.id, 0))
   const edges = props.band.items.flatMap((p) => {
-    const parent = forest.value.parentOf(p)
-    if (!parent || !(parent.id in pos)) return []
-    const a = pos[parent.id]!, b = pos[p.id]!
+    const up = from[p.id]
+    if (!up) return []
+    const a = pos[up]!, b = pos[p.id]!
     const x1 = a.x + CW, y1 = a.y + EY, x2 = b.x - 14, y2 = b.y + EY, tx = (x1 + x2) / 2
     const dy = y2 - y1, sy = Math.sign(dy), r = Math.min(8, Math.abs(dy) / 2)
     const d = Math.abs(dy) < 1
       ? `M${x1},${y1} H${x2}`
       : `M${x1},${y1} H${tx - r} Q${tx},${y1} ${tx},${y1 + sy * r} V${y2 - sy * r} Q${tx},${y2} ${tx + r},${y2} H${x2}`
-    return [{ to: p.id, from: parent, conf: blocking(p), len: Math.round(x2 - x1 + Math.abs(dy)), d }]
+    const hid = between(p, up)
+    return [{ to: p.id, from: up, hid, jx: tx, jy: y1, gx: tx, gy: Math.abs(dy) < 1 ? y1 - 11 : y2 - sy * 16, conf: !hid.length && blocking(p), len: Math.round(x2 - x1 + Math.abs(dy)), d }]
   })
-  return { pos, edges, W: maxX, H: y - GY }
+  const uses = (q: PullRequest) => edges.filter(x => x.hid.includes(q)).length
+  const gaps = edges.flatMap((e, i) => {
+    const own = e.hid.filter(q => uses(q) === 1)
+    const shared = edges.findIndex(x => x.from === e.from) === i ? [...new Set(edges.filter(x => x.from === e.from).flatMap(x => x.hid.filter(q => uses(q) > 1)))] : []
+    return [
+      ...(shared.length ? [{ key: e.from, hid: shared, x: e.jx, y: e.jy }] : []),
+      ...(own.length ? [{ key: e.to, hid: own, x: e.gx, y: e.gy }] : []),
+    ]
+  })
+  return { pos, edges, gaps, W: maxX, H: y - GY }
 })
 const delay = (id: string) => bd.value + (props.band.depth[id] ?? 0) * 0.12 + 0.05
 const parentInBand = (id: string) => {
@@ -97,7 +112,7 @@ function onHeaderClick(e: MouseEvent) {
 </script>
 
 <template>
-  <CollapsibleRoot v-model:open="open" as="section" class="band" :class="{ 'has-conflict': band.items.some(blocking), 'collapsed': !open }" :style="{ '--bd': `${bd}s` }">
+  <CollapsibleRoot v-model:open="open" as="section" class="band" :class="{ 'has-conflict': band.items.some(p => matches(p) && blocking(p)), 'collapsed': !open }" :style="{ '--bd': `${bd}s` }">
     <header class="band-h" data-fold-area @click="onHeaderClick">
       <div class="band-row">
         <FoldButton :open="open" />
@@ -107,7 +122,7 @@ function onHeaderClick(e: MouseEvent) {
     </header>
     <CollapsibleContent class="band-fold">
       <div v-if="band.kind === 'solo'" class="solo-grid">
-        <PrCard v-for="(p, i) in band.items" :key="p.id" :pr="p" :delay="bd + i * 0.05" />
+        <PrCard v-for="(p, i) in band.items.filter(matches)" :key="p.id" :pr="p" :delay="bd + i * 0.05" />
       </div>
       <div v-else-if="layout" class="band-scroll" :class="{ 'can-left': hidden.canL, 'can-right': hidden.canR }">
         <div
@@ -131,14 +146,17 @@ function onHeaderClick(e: MouseEvent) {
                 v-for="e in layout.edges"
                 :key="e.to"
                 class="edge"
-                :class="{ conf: e.conf, hl: edgeHl(e.to), dim: !matches(e.from) || !matches(band.items.find(x => x.id === e.to)!) }"
+                :class="{ conf: e.conf, hl: edgeHl(e.to) }"
                 marker-end="url(#arr)"
                 :style="{ '--len': e.len, '--d': `${delay(e.to)}s` }"
                 :d="e.d"
               />
             </svg>
+            <Tip v-for="g in layout.gaps" :key="`gap-${g.key}`" :text="t('band.gapTip', { n: g.hid.length, list: g.hid.map(q => `#${q.num}`).join(', ') }, g.hid.length)">
+              <span class="edge-gap" :style="{ left: `${g.x}px`, top: `${g.y}px` }">+{{ g.hid.length }}</span>
+            </Tip>
             <PrCard
-              v-for="p in band.items"
+              v-for="p in band.items.filter(matches)"
               :key="p.id"
               :pr="p"
               :abs="layout.pos[p.id]"

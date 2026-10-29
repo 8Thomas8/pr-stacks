@@ -146,9 +146,13 @@
   },
   "band": {
     "stack": "Pile · {n} PR",
+    "stackPart": "Pile · {shown}/{n} PR",
     "stackTip": "PR empilées : chacune cible la branche de la précédente",
     "solo": "Indépendantes · {n} PR",
+    "soloPart": "Indépendantes · {shown}/{n} PR",
     "soloTip": "PR qui ciblent directement la branche principale, sans PR empilée dessus",
+    "hiddenTip": "{n} masquée par les filtres | {n} masquées par les filtres",
+    "gapTip": "{n} PR masquée par les filtres : {list} | {n} PR masquées par les filtres : {list}",
     "baseTip": "Branche de base dans {repo}",
     "alert": "{n} PR en conflit",
     "alertTip": "En conflit : {list}",

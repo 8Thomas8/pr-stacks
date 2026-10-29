@@ -2,8 +2,8 @@
 import type { Band } from '~/utils/stacks'
 
 const props = defineProps<{ band: Band }>()
-const steps = computed(() => (props.band.kind === 'stack' ? levels(props.band) : [props.band.items]))
-const { st, pulseClass, blocking } = useStacks()
+const { st, pulseClass, blocking, matches } = useStacks()
+const steps = computed(() => (props.band.kind === 'stack' ? levels(props.band) : [props.band.items]).map(l => l.filter(matches)).filter(l => l.length))
 const { t } = useI18n()
 </script>
 
