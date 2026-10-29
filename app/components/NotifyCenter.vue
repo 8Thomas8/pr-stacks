@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { PopoverAnchor, PopoverContent, PopoverPortal, PopoverRoot, PopoverTrigger } from 'reka-ui'
 
-const { center, unread, bell, openNotice, openInbox, readThread, readRepos, tracked, readAllNotices, clearNotices, noticeText, inboxRef, inboxText } = useDesktop()
+const { ds, center, unread, bell, openNotice, openInbox, readThread, readRepos, tracked, readAllNotices, clearNotices, noticeText, inboxRef, inboxText } = useDesktop()
 const { st } = useStacks()
 const { t, rel } = useFmt()
 
@@ -54,6 +54,7 @@ onBeforeUnmount(() => window.removeEventListener('blur', close))
         <div class="nc-h">
           <h3 class="nc-t">{{ t('center.title') }}</h3>
           <SegToggle
+            v-if="ds.inbox"
             v-model="tab"
             :label="t('center.title')"
             :options="[
@@ -63,7 +64,7 @@ onBeforeUnmount(() => window.removeEventListener('blur', close))
           />
         </div>
 
-        <template v-if="tab === 'activity'">
+        <template v-if="tab === 'activity' || !ds.inbox">
           <ul v-if="center.notices.length" class="nc-list">
             <li v-for="n in center.notices" :key="n.id">
               <button class="nc-item" :class="{ unread: !n.read }" @click="go(() => openNotice(n))">
@@ -75,7 +76,7 @@ onBeforeUnmount(() => window.removeEventListener('blur', close))
               </button>
             </li>
           </ul>
-          <p v-else class="nc-empty">{{ t('center.empty') }}</p>
+          <p v-else class="nc-empty">{{ t(ds.inbox ? 'center.empty' : 'center.emptyNoInbox') }}</p>
           <div v-if="center.notices.length" class="nc-f">
             <button class="btn" :disabled="!unread" @click="readAllNotices"><Icon name="check" />{{ t('center.readAll') }}</button>
             <button class="btn" @click="clearNotices"><Icon name="x" />{{ t('center.clear') }}</button>

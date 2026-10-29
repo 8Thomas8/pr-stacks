@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { st, snap, prs, me, repos, QUICK, label, person } = useStacks()
+const { ds } = useDesktop()
 const { t, locale } = useI18n()
 const usedLabels = computed(() => [...new Set(prs.value.flatMap(p => p.labels))].sort((a, b) => a.localeCompare(b, locale.value)))
 const authors = computed(() => [...new Set(prs.value.map(p => p.author))]
@@ -14,7 +15,7 @@ const num = (n: number) => n.toLocaleString(locale.value)
   <aside class="rail" :aria-label="t('rail.label')">
     <FoldSection k="rail:views" :title="t('rail.views')" :active="st.quick === 'all' ? 0 : 1">
       <div class="qv">
-        <Tip v-for="x in QUICK" :key="x.k" :text="t(`quick.${x.k}.tip`)">
+        <Tip v-for="x in QUICK.filter(q => q.k !== 'gh' || ds.inbox)" :key="x.k" :text="t(`quick.${x.k}.tip`)">
           <button :aria-pressed="st.quick === x.k" @click="st.quick = x.k">
             <i class="sw" :style="{ background: x.c }"></i>{{ t(`quick.${x.k}.l`) }}
             <span class="n" :class="{ hot: x.hot && prs.filter(x.f).length }">{{ prs.filter(x.f).length }}</span>

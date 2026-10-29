@@ -38,6 +38,15 @@ The builds are not signed yet. On Windows, SmartScreen asks to confirm ("More in
 
 You also need [`gh`](https://cli.github.com/) logged in (`gh auth login`) with read access to the repos. The `gh` badge in the toolbar shows whether it is installed and signed in, and Preferences → GitHub CLI walks you through it otherwise.
 
+### GitHub permissions
+
+The token `gh auth login` creates has everything below. With a token of your own (`GH_TOKEN`, `gh auth login --with-token`):
+
+- Required: read access to the pull requests of the tracked repos. Classic token: `repo` (`public_repo` is enough for public repos only). Fine-grained token: Pull requests and Metadata, read-only, on those repos.
+- Optional, each can be turned off:
+  - GitHub notifications (bell, "GitHub notifications" view, mention / merged / assignment alerts): a classic token with the `notifications` or `repo` scope. Fine-grained tokens can't read notifications: turn them off in Preferences → Notifications → Check GitHub notifications.
+  - CI status: read access to commit statuses and checks. Turn it off in Preferences → Sync.
+
 Then open Preferences → Repositories to add your repos (`owner/repo` or a GitHub URL), the number of approvals a PR needs, and whether an approval still counts once commits are pushed after it. Settings are stored on your computer and sent with each sync; there is no config file. On first launch the app opens on an empty state with a button to that tab.
 
 ## Desktop
