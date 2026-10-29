@@ -503,9 +503,10 @@ a.jk:hover { background: var(--accent-soft); border-color: var(--accent); }
 .since .ok { color: var(--ok); } .since .warn { color: var(--warn); }
 .empty { padding: 60px 24px; text-align: center; color: var(--muted); }
 
-.drawer { position: fixed; top: var(--bar-h, 0px); right: 0; bottom: 0; width: min(470px, 100%); z-index: 31; background: var(--surface); border-left: 1px solid var(--line);
+.drawer { position: fixed; top: var(--bar-h, 0px); right: 0; bottom: 0; width: min(680px, 100%); z-index: 31; background: var(--surface); border-left: 1px solid var(--line);
   box-shadow: var(--shadow-lift); display: flex; flex-direction: column;
   padding-bottom: env(safe-area-inset-bottom, 0px); }
+.drawer > * { zoom: 1.1; }
 .d-head { padding: 18px 22px 14px; border-bottom: 1px solid var(--line); display: grid; gap: 9px; }
 .d-head .row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .d-head h2 { margin: 0; font: 700 19px/1.25 var(--f-display); letter-spacing: -0.015em; text-wrap: balance; }
