@@ -112,6 +112,10 @@
       "l": "Nouveautés",
       "tip": "PR encore surlignées parce qu’elles demandent ton attention (review à faire, changements demandés). Celles que tu survoles ou ouvres ici restent listées jusqu’à ce que tu quittes cette vue."
     },
+    "gh": {
+      "l": "Notifs GitHub",
+      "tip": "PR avec des notifications GitHub non lues. L’ouvrir sur GitHub, ou ✓ dans son panneau, les marque comme lues ; elle reste listée jusqu’à ce que tu quittes cette vue."
+    },
     "review": {
       "l": "À reviewer",
       "tip": "PR d’autres auteurs où ta review est demandée, ou que tu as déjà reviewées et qui ont reçu des commits depuis."
@@ -214,6 +218,7 @@
     "redo": "{names} à refaire"
   },
   "drawer": {
+    "ghUnread": "{n} notification GitHub non lue : | {n} notifications GitHub non lues :",
     "close": "Fermer",
     "closeTip": "Fermer (Échap)",
     "baseBranch": "Branche de base",
@@ -380,15 +385,39 @@
       "views": "Vue Piles / Liste",
       "zoom": "Zoom avant / arrière / normal"
     },
-    "notifyIntro": "PR Stacks te prévient quand une PR commence à te concerner, après une synchro (la synchro auto continue en arrière-plan).",
-    "notifyWhen": "Me notifier quand",
+    "notifyIntro": "PR Stacks te prévient quand une PR commence à te concerner. Les reviews et tes propres PR sont comparées d’une synchro à l’autre (la synchro auto continue en arrière-plan) ; les notifications GitHub sont relevées chaque minute. La cloche de la barre d’outils garde l’historique, même des types coupés ici.",
+    "notifyGroups": {
+      "review": "Reviews",
+      "mine": "Mes PR",
+      "inbox": "Notifications GitHub"
+    },
+    "inboxHint": "Celles de github.com/notifications, sur tous les dépôts, y compris ceux qui ne sont pas suivis ici.",
     "kinds": {
       "requested": "Ma review est demandée",
       "requestedHint": "Une PR demande ta review pour la première fois",
       "approve": "Une PR est à ré-approuver",
       "approveHint": "Nouveaux commits après ta review, ou ta review est redemandée",
-      "changes": "Des changements sont demandés",
-      "changesHint": "Un reviewer a demandé des changements sur une PR"
+      "approved": "Ma PR est approuvée",
+      "approvedHint": "Elle a les approbations qu’il lui faut : prête à merger",
+      "changes": "Des changements sont demandés sur ma PR",
+      "changesHint": "Un reviewer a demandé des changements",
+      "comments": "Nouveaux commentaires sur ma PR",
+      "commentsHint": "Un commentaire ou un fil de review de quelqu’un d’autre",
+      "ci": "La CI échoue sur ma PR",
+      "ciHint": "Les checks du dernier commit ont échoué.",
+      "ciOff": "Nécessite le statut CI (onglet Synchro).",
+      "conflict": "Ma PR est en conflit",
+      "conflictHint": "Elle ne se merge plus proprement dans sa base",
+      "parent": "La PR sous la mienne n’est plus ouverte",
+      "parentHint": "La PR sur laquelle elle est empilée a été mergée ou fermée : vérifie sa base et rebase",
+      "mention": "On me mentionne",
+      "mentionHint": "Toi ou ton équipe êtes {'@'}mentionnés sur une PR",
+      "merged": "Une PR que je suis est mergée ou fermée",
+      "mergedHint": "La tienne, ou une que tu as relue ou commentée",
+      "assign": "Une PR m’est assignée",
+      "assignHint": "On t’ajoute aux assignés",
+      "elsewhere": "Activité sur d’autres dépôts",
+      "elsewhereHint": "Reviews demandées et commentaires sur des dépôts non suivis ici"
     },
     "badge": "Alerte sur l’icône de notification",
     "badgeMac": "Compteur sur l’icône du Dock",
@@ -431,7 +460,45 @@
     "tray": "{n} PR te concerne | {n} PR te concernent",
     "approve": "Nouveaux commits depuis ta review : à ré-approuver",
     "requested": "Ta review est demandée",
-    "changes": "Des changements ont été demandés",
-    "test": "Les notifications fonctionnent."
+    "changes": "Changements demandés par {who}",
+    "test": "Les notifications fonctionnent.",
+    "approved": "Approuvée : prête à merger",
+    "comments": "Nouveaux commentaires de {who}",
+    "ci": "La CI a échoué",
+    "conflict": "Conflit avec {base}",
+    "parent": "{parent} n’est plus ouverte : vérifie la base et rebase",
+    "gh": {
+      "mention": "On te mentionne",
+      "team_mention": "Ton équipe a été mentionnée",
+      "assign": "On te l’a assignée",
+      "review_requested": "Ta review est demandée",
+      "comment": "Nouveau commentaire",
+      "author": "Nouvelle activité sur ta PR",
+      "subscribed": "Activité sur une PR que tu suis",
+      "merged": "Mergée",
+      "closed": "Fermée",
+      "state_change": "Statut modifié"
+    }
+  },
+  "center": {
+    "title": "Notifications",
+    "tip": "Centre de notifications",
+    "unread": "{n} notification non lue | {n} notifications non lues",
+    "activity": "Activité",
+    "activityN": "Activité · {n}",
+    "activityTip": "Tout ce que PR Stacks a détecté, y compris les types coupés pour les notifications système",
+    "github": "GitHub",
+    "githubN": "GitHub · {n}",
+    "githubTip": "Tes notifications GitHub non lues sur des PR, comme sur github.com/notifications",
+    "empty": "Rien pour l’instant. Les reviews demandées, l’activité sur tes PR et tes notifications GitHub arriveront ici.",
+    "emptyGh": "Aucune notification GitHub non lue.",
+    "readAll": "Tout marquer comme lu",
+    "readRepos": "Tout lire sur les dépôts suivis",
+    "clear": "Effacer",
+    "markRead": "Marquer comme lue sur GitHub",
+    "openGh": "Ouvrir sur GitHub",
+    "unreadSr": "Non lue :",
+    "ghError": "Impossible de relever tes notifications GitHub pour l’instant. Nouvel essai bientôt.",
+    "readFailed": "La notification n’a pas pu être marquée comme lue sur GitHub"
   }
 }

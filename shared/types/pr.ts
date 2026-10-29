@@ -15,6 +15,9 @@ export interface Thread {
   by: string
   f: string
   t: string
+  // comments in the thread, and who wrote the latest
+  n?: number
+  last?: string | null
 }
 
 export interface PullRequest {
@@ -43,6 +46,9 @@ export interface PullRequest {
   commitCount: number
   threads: Thread[]
   comments: number
+  // conversation comments only (outside review threads), and the author of the latest
+  talk?: number
+  lastComment: string | null
   dependsOn: string[]
   links: LinkedPr[]
 }
@@ -91,6 +97,30 @@ export interface SyncSettings {
   repos: string[]
   approvals: number
   fresh: boolean
+}
+
+// GitHub notification threads about pull requests (the inbox at github.com/notifications)
+export type InboxReason = 'mention' | 'team_mention' | 'state_change' | 'assign' | 'review_requested' | 'comment' | 'author' | 'subscribed'
+export interface InboxItem {
+  id: string
+  reason: InboxReason
+  slug: string
+  num: number
+  title: string
+  url: string
+  updatedAt: string
+  // only for state_change
+  state?: 'open' | 'closed' | 'merged'
+}
+export interface Inbox {
+  modified: boolean
+  lastModified: string | null
+  poll: number
+  // PR threads worth showing (reasons we relay)
+  items: InboxItem[]
+  // every unread thread, whatever its subject or reason, and whether that list was cut
+  unread: string[]
+  complete: boolean
 }
 
 export type GhState = 'ok' | 'missing' | 'unauthenticated' | 'error'

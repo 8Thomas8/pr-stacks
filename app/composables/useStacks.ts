@@ -4,7 +4,7 @@ import type { Rel } from '~/utils/stacks'
 type Translate = ReturnType<typeof useI18n>['t']
 
 export type Density = 'comfortable' | 'compact' | 'ultra'
-export type QuickKey = 'all' | 'new' | 'review' | 'mine' | 'rework'
+export type QuickKey = 'all' | 'new' | 'gh' | 'review' | 'mine' | 'rework'
 export type ToastKind = 'ok' | 'error' | 'info'
 export interface Toast { id: number, msg: string, sub?: string, kind: ToastKind }
 export interface Avatar extends Person { i: string, h: number }
@@ -157,6 +157,7 @@ function pathHas(fromId: string | null, id: string) {
 const QUICK: { k: QuickKey, f: (p: PullRequest) => boolean, c: string, hot?: boolean }[] = [
   { k: 'all', f: () => true, c: 'var(--line-strong)' },
   { k: 'new', f: p => !!pulseClass(p), c: 'var(--violet)', hot: true },
+  { k: 'gh', f: p => useDesktop().prInbox(p).length > 0, c: 'var(--accent)', hot: true },
   { k: 'review', f: p => !!forMe(p), c: 'var(--accent)', hot: true },
   { k: 'mine', f: p => p.author === me.value, c: 'var(--accent-ink)' },
   { k: 'rework', f: p => p.author === me.value && (p.status === 'changes' || p.threads.length > 0 || p.conflict), c: 'var(--warn)', hot: true },

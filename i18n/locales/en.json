@@ -112,6 +112,10 @@
       "l": "New",
       "tip": "PRs still highlighted because they need your attention (review to do, changes requested). The ones you hover or open here stay listed until you leave this view."
     },
+    "gh": {
+      "l": "GitHub notifications",
+      "tip": "PRs with unread GitHub notifications. Opening one on GitHub, or ✓ in its drawer, marks them read; it stays listed until you leave this view."
+    },
     "review": {
       "l": "To review",
       "tip": "Other people’s PRs where your review is requested, or that you already reviewed and got commits since."
@@ -214,6 +218,7 @@
     "redo": "{names} to redo"
   },
   "drawer": {
+    "ghUnread": "{n} unread GitHub notification: | {n} unread GitHub notifications:",
     "close": "Close",
     "closeTip": "Close (Esc)",
     "baseBranch": "Base branch",
@@ -380,15 +385,39 @@
       "views": "Stacks / List view",
       "zoom": "Zoom in / out / reset"
     },
-    "notifyIntro": "PR Stacks notifies you when a PR starts needing you, after a sync (auto sync keeps running in the background).",
-    "notifyWhen": "Notify me when",
+    "notifyIntro": "PR Stacks notifies you when a PR starts needing you. Reviews and your own PRs are compared from one sync to the next (auto sync keeps running in the background); the GitHub inbox is checked every minute. The bell in the toolbar keeps the history, including the kinds turned off here.",
+    "notifyGroups": {
+      "review": "Reviews",
+      "mine": "My PRs",
+      "inbox": "GitHub notifications"
+    },
+    "inboxHint": "From github.com/notifications, on every repository, including the ones not tracked here.",
     "kinds": {
       "requested": "My review is requested",
       "requestedHint": "A PR asks for your review for the first time",
       "approve": "A PR needs re-approval",
       "approveHint": "New commits after your review, or your review was requested again",
-      "changes": "Changes are requested",
-      "changesHint": "A reviewer requested changes on a PR"
+      "approved": "My PR is approved",
+      "approvedHint": "It has the approvals it needs: ready to merge",
+      "changes": "Changes are requested on my PR",
+      "changesHint": "A reviewer requested changes",
+      "comments": "New comments on my PR",
+      "commentsHint": "A comment or a review thread from someone else",
+      "ci": "CI fails on my PR",
+      "ciHint": "The checks of the last commit failed.",
+      "ciOff": "Needs CI status (Sync tab).",
+      "conflict": "My PR has a conflict",
+      "conflictHint": "It no longer merges cleanly into its base",
+      "parent": "The PR under mine is gone",
+      "parentHint": "The PR it is stacked on was merged or closed: time to check its base and rebase",
+      "mention": "I am mentioned",
+      "mentionHint": "You or your team are {'@'}mentioned on a PR",
+      "merged": "A PR I follow is merged or closed",
+      "mergedHint": "Yours, or one you reviewed or commented on",
+      "assign": "A PR is assigned to me",
+      "assignHint": "You were added as an assignee",
+      "elsewhere": "Activity on other repositories",
+      "elsewhereHint": "Review requests and comments on repositories not tracked here"
     },
     "badge": "Alert on the tray icon",
     "badgeMac": "Counter on the Dock icon",
@@ -431,7 +460,45 @@
     "tray": "{n} PR needs you | {n} PRs need you",
     "approve": "New commits since your review: re-approve",
     "requested": "Your review is requested",
-    "changes": "Changes were requested",
-    "test": "Notifications are working."
+    "changes": "Changes requested by {who}",
+    "test": "Notifications are working.",
+    "approved": "Approved: ready to merge",
+    "comments": "New comments from {who}",
+    "ci": "CI failed",
+    "conflict": "Conflict with {base}",
+    "parent": "{parent} is no longer open: check the base and rebase",
+    "gh": {
+      "mention": "You were mentioned",
+      "team_mention": "Your team was mentioned",
+      "assign": "Assigned to you",
+      "review_requested": "Your review is requested",
+      "comment": "New comment",
+      "author": "New activity on your PR",
+      "subscribed": "Activity on a PR you follow",
+      "merged": "Merged",
+      "closed": "Closed",
+      "state_change": "Status changed"
+    }
+  },
+  "center": {
+    "title": "Notifications",
+    "tip": "Notification center",
+    "unread": "{n} unread notification | {n} unread notifications",
+    "activity": "Activity",
+    "activityN": "Activity · {n}",
+    "activityTip": "Everything PR Stacks noticed, including the kinds turned off for system notifications",
+    "github": "GitHub",
+    "githubN": "GitHub · {n}",
+    "githubTip": "Your unread GitHub notifications about PRs, as at github.com/notifications",
+    "empty": "Nothing yet. Review requests, activity on your PRs and your GitHub notifications will show up here.",
+    "emptyGh": "No unread GitHub notifications.",
+    "readAll": "Mark all as read",
+    "readRepos": "Mark tracked repos read",
+    "clear": "Clear",
+    "markRead": "Mark as read on GitHub",
+    "openGh": "Open on GitHub",
+    "unreadSr": "Unread:",
+    "ghError": "Can't reach your GitHub notifications right now. Trying again soon.",
+    "readFailed": "Couldn't mark the notification read on GitHub"
   }
 }

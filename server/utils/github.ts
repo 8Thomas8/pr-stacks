@@ -34,12 +34,12 @@ const prFields = (ci: boolean) => `
   number title body url isDraft createdAt updatedAt headRefName headRefOid baseRefName mergeable mergeStateStatus reviewDecision
   author { login avatarUrl ... on User { name } }
   labels(first: 20) { nodes { name color description } }
-  comments { totalCount }
+  comments(last: 1) { totalCount nodes { author { login } } }
   commits(last: 30) { totalCount nodes { commit { oid abbreviatedOid messageHeadline committedDate authoredDate } } }
   ${ci ? 'head: commits(last: 1) { nodes { commit { statusCheckRollup { state } } } }' : ''}
   reviews(last: 40) { nodes { state submittedAt author { login avatarUrl ... on User { name } } commit { oid } } }
   reviewRequests(first: 20) { nodes { requestedReviewer { ... on User { login avatarUrl name } ... on Team { slug } } } }
-  reviewThreads(last: 50) { nodes { id isResolved path line originalLine comments(first: 1) { totalCount nodes { body author { login avatarUrl } } } } }
+  reviewThreads(last: 50) { nodes { id isResolved path line originalLine comments(first: 1) { totalCount nodes { body author { login avatarUrl } } } latest: comments(last: 1) { nodes { author { login } } } } }
 `
 
 const query = (ci: boolean) => `query($owner: String!, $name: String!, $cursor: String) {
@@ -72,12 +72,12 @@ interface GhPr {
   reviewDecision: string | null
   author: GhActor | null
   labels: { nodes: { name: string, color: string, description: string | null }[] }
-  comments: { totalCount: number }
+  comments: { totalCount: number, nodes: { author: GhActor | null }[] }
   commits: { totalCount: number, nodes: { commit: GhCommit }[] }
   head?: { nodes: { commit: { statusCheckRollup: { state: string } | null } }[] }
   reviews: { nodes: { state: string, submittedAt: string, author: GhActor | null, commit: { oid: string } | null }[] }
   reviewRequests: { nodes: { requestedReviewer: GhActor | null }[] }
-  reviewThreads: { nodes: { id: string, isResolved: boolean, path: string, line: number | null, originalLine: number | null, comments: { totalCount: number, nodes: { body: string, author: GhActor | null }[] } }[] }
+  reviewThreads: { nodes: { id: string, isResolved: boolean, path: string, line: number | null, originalLine: number | null, comments: { totalCount: number, nodes: { body: string, author: GhActor | null }[] }, latest: { nodes: { author: GhActor | null }[] } }[] }
 }
 interface GhResponse {
   errors?: { message: string }[]
@@ -171,7 +171,7 @@ function normalize(repos: RepoData[], { approvals, fresh }: Pick<SyncOptions, 'a
       const threads = n.reviewThreads.nodes.filter(t => !t.isResolved).map((t) => {
         const c = t.comments.nodes[0]
         const line = t.line || t.originalLine
-        return { id: t.id, by: person(c?.author), f: `${t.path}${line ? `:${line}` : ''}`, t: c?.body || '' }
+        return { id: t.id, by: person(c?.author), f: `${t.path}${line ? `:${line}` : ''}`, t: c?.body || '', n: t.comments.totalCount, last: t.latest.nodes[0]?.author?.login ?? null }
       })
       const threadComments = n.reviewThreads.nodes.reduce((a, t) => a + t.comments.totalCount, 0)
       const rollup = n.head?.nodes[0]?.commit.statusCheckRollup
@@ -191,7 +191,7 @@ function normalize(repos: RepoData[], { approvals, fresh }: Pick<SyncOptions, 'a
         status, ci: CI[rollup?.state ?? ''] || 'none',
         createdAt: n.createdAt, updatedAt: n.updatedAt, labels: n.labels.nodes.map(l => l.name), reviews,
         commits: commits.map(c => [c.abbreviatedOid, c.messageHeadline, c.committedDate]), commitCount: n.commits.totalCount,
-        threads, comments: n.comments.totalCount + threadComments, dependsOn: [], links: [],
+        threads, comments: n.comments.totalCount + threadComments, talk: n.comments.totalCount, lastComment: n.comments.nodes[0]?.author?.login ?? null, dependsOn: [], links: [],
       })
     }
   }

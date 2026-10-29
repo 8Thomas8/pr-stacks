@@ -30,5 +30,5 @@ export function useFmt() {
   }
   const since = (kind: 'opened' | 'updated', iso: string, now = Date.now()) =>
     now - Date.parse(iso) < 60e3 ? t(`dates.${kind}Now`) : t(kind === 'opened' ? 'dates.opened' : 'dates.updatedAgo', { ago: rel(iso, now) })
-  return { t, locale, commits, fmtAt, fmtFull, since, stepTip }
+  return { t, locale, commits, fmtAt, fmtFull, rel, since, stepTip }
 }

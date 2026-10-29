@@ -146,7 +146,7 @@ export function demoSnapshot({ ci, approvals, fresh }: Pick<SyncOptions, 'ci' | 
       head: s.head, base: s.base, headOid: sha(s.num, n), conflict: !!s.conflict, behind: !!s.behind, mergeable: s.conflict ? 'CONFLICTING' : 'MERGEABLE',
       status, ci: ci ? s.ci ?? 'none' : 'none', createdAt: ago(oldest + 3), updatedAt: ago(s.updated), labels: s.labels ?? [], reviews,
       commits: s.commits.map((m, i) => [sha(s.num, i), m, ago(s.updated + (n - i) * 5)]), commitCount: n,
-      threads: (s.threads ?? []).map((t, i) => ({ ...t, id: `${s.repo}#${s.num}/${i}` })), comments: (s.comments ?? 0) + (s.threads?.length ?? 0),
+      threads: (s.threads ?? []).map((t, i) => ({ ...t, id: `${s.repo}#${s.num}/${i}` })), comments: (s.comments ?? 0) + (s.threads?.length ?? 0), talk: s.comments ?? 0, lastComment: null,
       dependsOn: s.dependsOn ?? [], links: s.links ?? [],
     }
   })
