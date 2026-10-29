@@ -2,29 +2,33 @@
 import type { PullRequest } from '#shared/types/pr'
 import type { Band, Rel } from '~/utils/stacks'
 
-const { st, lean, visibleBands, forest, matches, pulseClass, hoverSeen, submitted, person, setCollapsed, blocking, rels } = useStacks()
+const { st, lean, visibleBands, forest, matches, visible, between, pulseClass, hoverSeen, submitted, person, setCollapsed, blocking, rels } = useStacks()
 const { t, fmtFull, since, stepTip } = useFmt()
 const notes = (rs: Rel[]) => (rs.filter(r => r.k === 'link').length > 1 ? rs.filter(r => r.k !== 'link') : rs)
 
 function rows(b: Band) {
-  const out: { p: PullRequest, step?: number, depth: number, parent?: PullRequest, pipes: number[], last: boolean, hasKids: boolean }[] = []
+  const out: { p: PullRequest, step?: number, depth: number, parent?: PullRequest, hid: PullRequest[], pipes: number[], last: boolean, hasKids: boolean }[] = []
   if (b.kind === 'stack') {
-    const visible = (list: PullRequest[]): PullRequest[] => list.flatMap(c => (matches(c) ? [c] : visible(forest.value.kids(c.id))))
-    const walk = (list: PullRequest[], depth: number, prefix: boolean[]) => list.forEach((c, idx) => {
-      const last = idx === list.length - 1
-      const kids = visible(forest.value.kids(c.id))
-      const parent = forest.value.parentOf(c)
-      out.push({ p: c, step: (b.depth[c.id] ?? 0) + 1, depth, parent: parent && b.depth[parent.id] !== undefined ? parent : undefined, pipes: prefix.flatMap((on, k) => (on ? [k] : [])), last, hasKids: kids.length > 0 })
-      walk(kids, depth + 1, depth ? [...prefix, !last] : prefix)
-    })
+    const walk = (list: PullRequest[], depth: number, prefix: boolean[], from?: PullRequest) => {
+      const hids = list.map(c => (from ? between(c, from.id) : []))
+      list.forEach((c, idx) => {
+        const last = idx === list.length - 1
+        const kids = visible(forest.value.kids(c.id))
+        const parent = forest.value.parentOf(c)
+        const hid = hids[idx]!.filter(q => hids.findIndex(h => h.includes(q)) === idx)
+        out.push({ p: c, step: (b.depth[c.id] ?? 0) + 1, depth, parent: parent && b.depth[parent.id] !== undefined ? parent : undefined, hid, pipes: prefix.flatMap((on, k) => (on ? [k] : [])), last, hasKids: kids.length > 0 })
+        walk(kids, depth + 1, depth ? [...prefix, !last] : prefix, c)
+      })
+    }
     walk(visible(b.tops), 0, [])
   }
-  else b.items.filter(matches).forEach(p => out.push({ p, depth: 0, pipes: [], last: true, hasKids: false }))
+  else b.items.filter(matches).forEach(p => out.push({ p, depth: 0, hid: [], pipes: [], last: true, hasKids: false }))
   return out.map((r) => {
     const subs = submitted(r.p)
     return { ...r, rels: rels(r.p), fresh: names(subs.filter(x => x.after === 0).map(x => x.by)), stale: names(subs.filter(x => x.after > 0).map(x => x.by)) }
   })
 }
+const gapTip = (hid: PullRequest[]) => t('band.gapTip', { n: hid.length, list: hid.map(q => `#${q.num}`).join(', ') }, hid.length)
 const names = (logins: string[]) => logins.map(l => person(l).n).join(', ')
 const bandRows = computed(() => new Map(visibleBands.value.map(b => [b.key, rows(b)])))
 function toggle(b: Band, e: MouseEvent) {
@@ -43,7 +47,7 @@ function toggle(b: Band, e: MouseEvent) {
           <span class="grp-mini"><MiniChips :band="b" /></span>
         </header>
         <article
-          v-for="{ p, step, depth, parent, pipes, last, hasKids, rels: pRels, fresh, stale } in bandRows.get(b.key)"
+          v-for="{ p, step, depth, parent, hid, pipes, last, hasKids, rels: pRels, fresh, stale } in bandRows.get(b.key)"
           :key="p.id"
           class="row"
           :class="[{ 'root': !depth, 'conflict': blocking(p), 'draft': p.draft, 'draft-conflict': p.draft && p.conflict, 'flash': st.changed.has(p.id), 'sel': st.sel === p.id }, pulseClass(p)]"
@@ -59,13 +63,16 @@ function toggle(b: Band, e: MouseEvent) {
             <i v-if="depth && !last" :style="{ '--k': depth - 1 }"></i>
             <i v-if="depth" class="elbow" :style="{ '--k': depth - 1 }"></i>
             <i v-if="hasKids" class="down" :style="{ '--k': depth }"></i>
+            <Tip v-if="hid.length" :text="gapTip(hid)">
+              <span class="edge-gap" :style="{ '--k': depth - 1 }">+{{ hid.length }}</span>
+            </Tip>
             <Tip :text="stepTip(step, parent)">
               <span class="lstep" :class="{ draft: p.status === 'draft' }" :style="{ '--c': STATUS_COLOR[p.status] }">{{ step }}</span>
             </Tip>
           </span>
           <div class="l-main">
             <div class="l-title">
-              <h3 :id="`l-${p.id}`">{{ p.title }}<span v-if="step" class="sr-only"> · {{ stepTip(step, parent) }}</span></h3>
+              <h3 :id="`l-${p.id}`">{{ p.title }}<span v-if="step" class="sr-only"> · {{ stepTip(step, parent) }}<template v-if="hid.length"> · {{ gapTip(hid) }}</template></span></h3>
               <LabelPill v-for="l in p.labels" :key="l" :name="l" />
               <ForMeTag :pr="p" />
               <ConflictTip v-if="blocking(p)" :pr="p"><span class="conf-tag"><Icon name="conflict" />{{ t('card.conflict') }}</span></ConflictTip>

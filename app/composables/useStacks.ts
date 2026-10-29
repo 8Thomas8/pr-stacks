@@ -177,6 +177,12 @@ function matches(p: PullRequest) {
   return true
 }
 const visibleBands = computed(() => forest.value.bands.filter(b => b.items.some(matches)))
+const visible = (list: PullRequest[]): PullRequest[] => list.flatMap(c => (matches(c) ? [c] : visible(forest.value.kids(c.id))))
+function between(p: PullRequest, from: string) {
+  const out: PullRequest[] = []
+  for (let q = forest.value.parentOf(p); q && q.id !== from; q = forest.value.parentOf(q)) out.unshift(q)
+  return out
+}
 
 let toastId = 0
 function toast(msg: string, sub?: string, kind: ToastKind = 'info') {
@@ -393,7 +399,7 @@ function openPrefs(tab: PrefsTab = 'general') {
 export function useStacks() {
   return {
     st, snap, prs, me, repos, tree, forest, visibleBands, QUICK, every,
-    person, byId, submitted, sinceLastReview, toApproveByMe, reviewRequested, forMe, blocking, blocks, rels, pulseClass, hoverSeen, pathHas, matches,
+    person, byId, submitted, sinceLastReview, toApproveByMe, reviewRequested, forMe, blocking, blocks, rels, pulseClass, hoverSeen, pathHas, matches, visible, between,
     toast, dropToast, setCollapsed, setAllFolded, setFocus, setFolded, refresh, setMode, setCi, setAutoS, setDensity, setHideDrafts, setView, start, useTranslate, setSettings, openPrefs,
     lean,
     ls,

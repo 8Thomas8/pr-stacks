@@ -2,7 +2,7 @@
 import type { PullRequest } from '#shared/types/pr'
 
 const props = defineProps<{ pr: PullRequest, step?: number, parent?: PullRequest, abs?: { x: number, y: number }, delay: number }>()
-const { st, lean, matches, pulseClass, hoverSeen, rels: relsOf, blocking } = useStacks()
+const { st, lean, pulseClass, hoverSeen, rels: relsOf, blocking } = useStacks()
 const { t, fmtFull, since, stepTip } = useFmt()
 const open = (id: string) => {
   st.sel = id
@@ -19,7 +19,7 @@ const more = computed(() => (slots.value > 2 ? rels.value.filter(r => !shown.val
 <template>
   <article
     class="card"
-    :class="[{ 'abs': abs, 'draft': p.draft, 'conflict': blocking(p), 'draft-conflict': p.draft && p.conflict, 'dim': !matches(p), 'sel': st.sel === p.id, 'flash': st.changed.has(p.id) }, `is-${p.status}`, pulseClass(p)]"
+    :class="[{ 'abs': abs, 'draft': p.draft, 'conflict': blocking(p), 'draft-conflict': p.draft && p.conflict, 'sel': st.sel === p.id, 'flash': st.changed.has(p.id) }, `is-${p.status}`, pulseClass(p)]"
     :style="{ 'left': abs ? `${abs.x}px` : undefined, 'top': abs ? `${abs.y}px` : undefined, '--d': `${delay}s` }"
     tabindex="0"
     :aria-labelledby="`t-${p.id}`"
