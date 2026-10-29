@@ -395,7 +395,8 @@
       "mine": "My PRs",
       "inbox": "GitHub notifications"
     },
-    "inboxHint": "From github.com/notifications, on every repository, including the ones not tracked here.",
+    "inbox": "Check GitHub notifications",
+    "inboxHint": "From github.com/notifications, on every repository, including the ones not tracked here. Needs a classic token with the notifications or repo scope: turn it off if yours can't read them (a fine-grained token never can).",
     "kinds": {
       "requested": "My review is requested",
       "requestedHint": "A PR asks for your review for the first time",
@@ -495,6 +496,7 @@
     "githubN": "GitHub · {n}",
     "githubTip": "Your unread GitHub notifications about PRs, as at github.com/notifications",
     "empty": "Nothing yet. Review requests, activity on your PRs and your GitHub notifications will show up here.",
+    "emptyNoInbox": "Nothing yet. Review requests and activity on your PRs will show up here.",
     "emptyGh": "No unread GitHub notifications.",
     "readAll": "Mark all as read",
     "readRepos": "Mark tracked repos read",
@@ -502,7 +504,7 @@
     "markRead": "Mark as read on GitHub",
     "openGh": "Open on GitHub",
     "unreadSr": "Unread:",
-    "ghError": "Can't reach your GitHub notifications right now. Trying again soon.",
+    "ghError": "Can't reach your GitHub notifications right now. Trying again soon. If your token can't read them, turn them off in Preferences → Notifications.",
     "readFailed": "Couldn't mark the notification read on GitHub"
   }
 }

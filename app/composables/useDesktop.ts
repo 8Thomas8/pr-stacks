@@ -20,6 +20,7 @@ const bridge = () => (import.meta.client ? window.desktop : undefined)
 const ds = reactive({
   theme: 'system' as Theme,
   notify: true,
+  inbox: true,
   notifyKinds: new Set<NotifyKind>(NOTIFY_KINDS),
   badge: true,
   closeToTray: true,
@@ -67,6 +68,16 @@ function setNotifyKind(k: NotifyKind, on: boolean) {
   else ds.notifyKinds.delete(k)
   // the kinds turned off are stored, so kinds added later start on
   useStacks().ls.set('stacks-notify-off', JSON.stringify(NOTIFY_KINDS.filter(x => !ds.notifyKinds.has(x))))
+}
+function setInbox(on: boolean) {
+  const { ls, st } = useStacks()
+  ds.inbox = on
+  ls.set('stacks-inbox', on ? 'on' : 'off')
+  clearTimeout(inbox.timer)
+  Object.assign(inbox, { gen: inbox.gen + 1, seen: null, since: null, rounds: 0, fails: 0 })
+  Object.assign(center, { inbox: [], inboxLoaded: false, inboxError: false })
+  if (on) pollInbox()
+  else if (st.quick === 'gh') st.quick = 'all'
 }
 function setBadge(on: boolean) {
   ds.badge = on
@@ -178,6 +189,7 @@ const inbox = {
   auto: new Set<string>(),
   rounds: 0,
   fails: 0,
+  gen: 0,
   timer: undefined as ReturnType<typeof setTimeout> | undefined,
 }
 // marks a thread read on GitHub: it leaves the inbox, and the notices it raised are read too
@@ -264,11 +276,13 @@ function inboxKind(i: InboxItem): NotifyKind | null {
   }
 }
 async function pollInbox() {
+  const gen = inbox.gen
   let wait: number
   try {
     // every few rounds, a full answer: reading a thread on github.com does not move Last-Modified
     const since = inbox.rounds++ % 5 && inbox.since
     const res = await $fetch<Inbox>('/api/inbox', { query: since ? { since } : {} })
+    if (gen !== inbox.gen) return
     wait = res.poll
     inbox.fails = 0
     center.inboxError = false
@@ -295,6 +309,7 @@ async function pollInbox() {
     }
   }
   catch {
+    if (gen !== inbox.gen) return
     // gh not ready, offline or rate limited: back off, up to 15 min
     wait = Math.min(60 * 2 ** inbox.fails++, 900)
     center.inboxError = true
@@ -316,6 +331,7 @@ function startDesktop(translate: Translate, onCommand: (cmd: DesktopCommand) => 
   const saved = ls.get('stacks-theme') as Theme
   ds.theme = THEMES.includes(saved) ? saved : 'system'
   ds.notify = ls.get('stacks-notify') !== 'off'
+  ds.inbox = ls.get('stacks-inbox') !== 'off'
   ds.badge = ls.get('stacks-badge') !== 'off'
   try {
     let off = JSON.parse(ls.get('stacks-notify-off') ?? 'null') as NotifyKind[] | null
@@ -381,7 +397,7 @@ function startDesktop(translate: Translate, onCommand: (cmd: DesktopCommand) => 
     }
     notified = new Set(review.map(reviewKey))
   })
-  inbox.timer = setTimeout(pollInbox, 5000)
+  if (ds.inbox) inbox.timer = setTimeout(pollInbox, 5000)
 
   // GitHub notifications the dashboard made useless
   watchEffect(() => {
@@ -396,5 +412,5 @@ function startDesktop(translate: Translate, onCommand: (cmd: DesktopCommand) => 
 }
 
 export function useDesktop() {
-  return { ds, center, unread, bell, openNotice, openInbox, readThread, prInbox, readPr, readRepos, tracked, readAllNotices, clearNotices, noticeText, inboxRef, inboxText, desktop: bridge, checkGh, setTheme, setNotify, setNotifyKind, setBadge, testNotification, setAppPref, startDesktop }
+  return { ds, center, unread, bell, openNotice, openInbox, readThread, prInbox, readPr, readRepos, tracked, readAllNotices, clearNotices, noticeText, inboxRef, inboxText, desktop: bridge, checkGh, setTheme, setNotify, setNotifyKind, setInbox, setBadge, testNotification, setAppPref, startDesktop }
 }

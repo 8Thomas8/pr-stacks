@@ -4,7 +4,7 @@ import type { SyncSettings } from '#shared/types/pr'
 import type { IconName } from './Icon.vue'
 
 const { st, every, toast, setSettings, setCi, setAutoS, setDensity, setHideDrafts } = useStacks()
-const { ds, desktop, checkGh, setTheme, setNotify, setNotifyKind, setBadge, testNotification, setAppPref } = useDesktop()
+const { ds, desktop, checkGh, setTheme, setNotify, setNotifyKind, setInbox, setBadge, testNotification, setAppPref } = useDesktop()
 const { t, locale, locales, setLocale } = useI18n()
 
 const TABS: { k: PrefsTab, icon: IconName }[] = [
@@ -38,6 +38,7 @@ const ci = computed({ get: () => st.ci, set: setCi })
 /* notifications */
 const notify = computed({ get: () => ds.notify, set: setNotify })
 const badge = computed({ get: () => ds.badge, set: setBadge })
+const inboxOn = computed({ get: () => ds.inbox, set: setInbox })
 const kindHint = (k: NotifyKind) => t(`prefs.kinds.${k}Hint`) + (k === 'ci' && !st.ci ? ` ${t('prefs.kinds.ciOff')}` : '')
 
 /* app */
@@ -209,10 +210,13 @@ async function recheck() {
               </section>
               <section v-for="(kinds, g) in NOTIFY_GROUPS" :key="g" class="modal-sec" :class="{ off: !ds.notify }">
                 <h5>{{ t(`prefs.notifyGroups.${g}`) }}</h5>
-                <p v-if="g === 'inbox'" class="hint">{{ t('prefs.inboxHint') }}</p>
-                <label v-for="k in kinds" :key="k" class="field toggle">
+                <label v-if="g === 'inbox'" class="field toggle">
+                  <span class="menu-t"><span>{{ t('prefs.inbox') }}</span><small>{{ t('prefs.inboxHint') }}</small></span>
+                  <SwitchRoot v-model="inboxOn" class="switch" :aria-label="t('prefs.inbox')"><SwitchThumb class="switch-thumb" /></SwitchRoot>
+                </label>
+                <label v-for="k in kinds" :key="k" class="field toggle" :class="{ off: g === 'inbox' && !ds.inbox }">
                   <span class="menu-t"><span>{{ t(`prefs.kinds.${k}`) }}</span><small>{{ kindHint(k) }}</small></span>
-                  <SwitchRoot :model-value="ds.notifyKinds.has(k)" class="switch" :disabled="!ds.notify" :aria-label="t(`prefs.kinds.${k}`)" @update:model-value="(v: boolean) => setNotifyKind(k, v)"><SwitchThumb class="switch-thumb" /></SwitchRoot>
+                  <SwitchRoot :model-value="ds.notifyKinds.has(k)" class="switch" :disabled="!ds.notify || (g === 'inbox' && !ds.inbox)" :aria-label="t(`prefs.kinds.${k}`)" @update:model-value="(v: boolean) => setNotifyKind(k, v)"><SwitchThumb class="switch-thumb" /></SwitchRoot>
                 </label>
               </section>
               <section class="modal-sec">

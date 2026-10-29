@@ -637,7 +637,7 @@ a.jk:hover { background: var(--accent-soft); border-color: var(--accent); }
 .prefs-panel h3 { margin: 0; font: 700 18px/1.25 var(--f-display); }
 .prefs-panel .modal-sub { margin-top: -6px; }
 .prefs-panel .modal-sec { gap: 12px; }
-.prefs-panel .modal-sec.off { opacity: .55; }
+.prefs-panel .modal-sec.off, .prefs-panel .field.off { opacity: .55; }
 .prefs-panel .field.toggle { margin: 0; padding: 0; }
 .prefs-panel .seg { flex: none; }
 .choice-list { display: grid; gap: 6px; }

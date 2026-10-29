@@ -395,7 +395,8 @@
       "mine": "Mes PR",
       "inbox": "Notifications GitHub"
     },
-    "inboxHint": "Celles de github.com/notifications, sur tous les dépôts, y compris ceux qui ne sont pas suivis ici.",
+    "inbox": "Relever les notifications GitHub",
+    "inboxHint": "Celles de github.com/notifications, sur tous les dépôts, y compris ceux qui ne sont pas suivis ici. Il faut un token classique avec le scope notifications ou repo : coupe-le si le tien ne peut pas les lire (un token fine-grained ne le peut jamais).",
     "kinds": {
       "requested": "Ma review est demandée",
       "requestedHint": "Une PR demande ta review pour la première fois",
@@ -495,6 +496,7 @@
     "githubN": "GitHub · {n}",
     "githubTip": "Tes notifications GitHub non lues sur des PR, comme sur github.com/notifications",
     "empty": "Rien pour l’instant. Les reviews demandées, l’activité sur tes PR et tes notifications GitHub arriveront ici.",
+    "emptyNoInbox": "Rien pour l’instant. Les reviews demandées et l’activité sur tes PR arriveront ici.",
     "emptyGh": "Aucune notification GitHub non lue.",
     "readAll": "Tout marquer comme lu",
     "readRepos": "Tout lire sur les dépôts suivis",
@@ -502,7 +504,7 @@
     "markRead": "Marquer comme lue sur GitHub",
     "openGh": "Ouvrir sur GitHub",
     "unreadSr": "Non lue :",
-    "ghError": "Impossible de relever tes notifications GitHub pour l’instant. Nouvel essai bientôt.",
+    "ghError": "Impossible de relever tes notifications GitHub pour l’instant. Nouvel essai bientôt. Si ton token ne peut pas les lire, coupe-les dans Préférences → Notifications.",
     "readFailed": "La notification n’a pas pu être marquée comme lue sur GitHub"
   }
 }
