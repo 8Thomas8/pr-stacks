@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.4.0](https://github.com/8Thomas8/pr-stacks/compare/v0.3.0...v0.4.0) (2026-10-29)
+
+
+### Features
+
+* **drawer:** widen the drawer and enlarge its text ([#29](https://github.com/8Thomas8/pr-stacks/issues/29)) ([176c5c9](https://github.com/8Thomas8/pr-stacks/commit/176c5c9e429cbed541a41de87d45ff124688f0b5))
+* **filters:** hide filtered PRs and mark the gaps they leave ([#30](https://github.com/8Thomas8/pr-stacks/issues/30)) ([8b33a26](https://github.com/8Thomas8/pr-stacks/commit/8b33a26d70df68eae73ea6c103b1a6838f8d3654))
+* **notifications:** allow turning off GitHub notifications ([#31](https://github.com/8Thomas8/pr-stacks/issues/31)) ([3a29bba](https://github.com/8Thomas8/pr-stacks/commit/3a29bba4b9eb38fa1737345531261b17fcb26b20))
+* **notify:** relay GitHub notifications and flag PRs that have unread ones ([#27](https://github.com/8Thomas8/pr-stacks/issues/27)) ([2d51652](https://github.com/8Thomas8/pr-stacks/commit/2d5165249ed3431874491e57d0ed096e696ef961))
+
 ## [0.3.0](https://github.com/8Thomas8/pr-stacks/compare/v0.2.0...v0.3.0) (2026-10-28)
 
 
