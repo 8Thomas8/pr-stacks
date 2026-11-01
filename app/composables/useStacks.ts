@@ -265,13 +265,20 @@ function keepConflicts(prev: PullRequest[], next: PullRequest[]) {
   }
 }
 
+let forcing = false
+let queued = false
 async function refresh({ silent = false } = {}) {
-  if (st.refreshing) return
+  if (st.refreshing) {
+    queued ||= !silent && !forcing
+    return
+  }
   st.refreshing = true
+  forcing = !silent
   try {
     const s = st.settings
     const query = {
       ...(st.ci ? { ci: '1' } : {}),
+      ...(silent ? {} : { force: '1' }),
       ...(s ? { repos: s.repos.join(','), approvals: String(s.approvals), fresh: s.fresh ? '1' : '0' } : {}),
     }
     const data = await $fetch<Snapshot>('/api/prs', { query }).catch((e) => {
@@ -324,7 +331,11 @@ async function refresh({ silent = false } = {}) {
     st.refreshing = false
     st.countdown = st.autoS
   }
-  if (snap.value && snap.value.ci !== st.ci && !st.loadError) refresh({ silent: true })
+  if (queued) {
+    queued = false
+    refresh()
+  }
+  else if (snap.value && snap.value.ci !== st.ci && !st.loadError) refresh({ silent: true })
 }
 
 function setMode(m: 'manual' | 'auto', quiet = false) {
