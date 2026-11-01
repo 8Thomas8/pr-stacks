@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/8Thomas8/pr-stacks/compare/v0.4.0...v0.5.0) (2026-11-01)
+
+
+### Features
+
+* **api:** skip refetching repositories that have not changed ([#32](https://github.com/8Thomas8/pr-stacks/issues/32)) ([ab3370b](https://github.com/8Thomas8/pr-stacks/commit/ab3370b285f24bd9d3e245facbe93e80a04d4561))
+
 ## [0.4.0](https://github.com/8Thomas8/pr-stacks/compare/v0.3.0...v0.4.0) (2026-10-29)
 
 
