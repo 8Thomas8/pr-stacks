@@ -2,7 +2,7 @@ import { execFile } from 'node:child_process'
 import type { Label, LinkedPr, Person, PrStatus, PullRequest, Review, Snapshot } from '#shared/types/pr'
 
 interface RepoRef { owner: string, name: string }
-export interface SyncOptions { ci: boolean, repos: string[], approvals: number, fresh: boolean }
+export interface SyncOptions { ci: boolean, repos: string[], approvals: number, fresh: boolean, force: boolean }
 
 export const SLUG = /^[\w.-]{1,100}\/[\w.-]{1,100}$/
 export const NO_REPOS = 'no-repos'
@@ -98,6 +98,7 @@ async function fetchRepo({ owner, name }: RepoRef, ci: boolean): Promise<RepoDat
   const prs: GhPr[] = []
   let cursor: string | null = null
   let res!: GhResponse
+  let cost = 0
   for (let page = 0; page < 15; page++) {
     const args = ['api', 'graphql', '-f', `query=${query(ci)}`, '-F', `owner=${owner}`, '-F', `name=${name}`]
     if (cursor) args.push('-f', `cursor=${cursor}`)
@@ -105,12 +106,13 @@ async function fetchRepo({ owner, name }: RepoRef, ci: boolean): Promise<RepoDat
       throw new Error(`${owner}/${name}: ${e.message}`, { cause: e })
     })
     if (res.errors) throw new Error(`${owner}/${name}: ${res.errors.map(e => e.message).join('; ')}`)
+    cost += res.data.rateLimit.cost
     const conn = res.data.repository.pullRequests
     prs.push(...conn.nodes)
     if (!conn.pageInfo.hasNextPage) break
     cursor = conn.pageInfo.endCursor
   }
-  return { owner, name, viewer: res.data.viewer.login, rate: res.data.rateLimit, defaultBranch: res.data.repository.defaultBranchRef?.name ?? null, prs }
+  return { owner, name, viewer: res.data.viewer.login, rate: { ...res.data.rateLimit, cost }, defaultBranch: res.data.repository.defaultBranchRef?.name ?? null, prs }
 }
 
 const CI: Record<string, PullRequest['ci']> = { SUCCESS: 'success', FAILURE: 'failure', ERROR: 'failure', PENDING: 'running', EXPECTED: 'running' }
@@ -292,6 +294,46 @@ async function lookupLinks(keys: string[], ci: boolean) {
   return { found, failed: [...failed], cost }
 }
 
+const repoCache = new Map<string, { stamp: string, at: number, data: RepoData }>()
+const MAX_AGE = 5 * 60_000
+
+interface GhProbe { data: Pick<GhResponse['data'], 'viewer' | 'rateLimit'> & Record<string, unknown> }
+
+async function probe(refs: RepoRef[], ci: boolean) {
+  const q = `query { viewer { login } rateLimit { remaining limit cost } ${refs.map((r, i) => `r${i}: repository(owner: ${JSON.stringify(r.owner)}, name: ${JSON.stringify(r.name)}) {
+    defaultBranchRef { target { oid } }
+    pullRequests(states: OPEN, first: 20, orderBy: { field: UPDATED_AT, direction: DESC }) {
+      totalCount
+      nodes { number updatedAt baseRef { target { oid } } ${ci ? 'commits(last: 1) { nodes { commit { statusCheckRollup { state } } } }' : ''} }
+    }
+  }`).join('\n')} }`
+  const res = await gh<GhProbe>(['api', 'graphql', '-f', `query=${q}`], { partial: true }).catch(() => null)
+  return res && { viewer: res.data.viewer.login, rate: res.data.rateLimit, stamps: refs.map((_, i) => (res.data[`r${i}`] ? JSON.stringify(res.data[`r${i}`]) : null)) }
+}
+
+const settled = (r: RepoData) => r.prs.every(n => n.mergeable !== 'UNKNOWN')
+
+async function fetchRepos(refs: RepoRef[], ci: boolean, force: boolean) {
+  for (const [key, entry] of repoCache) {
+    if (Date.now() - entry.at >= MAX_AGE) repoCache.delete(key)
+  }
+  const seen = await probe(refs, ci)
+  let cost = seen?.rate.cost ?? 0
+  const repos = await Promise.all(refs.map(async (r, i) => {
+    const key = `${r.owner}/${r.name}:${ci}`
+    const stamp = seen?.stamps[i]
+    const hit = repoCache.get(key)
+    if (seen && !force && stamp && hit?.stamp === stamp && settled(hit.data)) {
+      return { ...hit.data, viewer: seen.viewer, rate: seen.rate }
+    }
+    const data = await fetchRepo(r, ci)
+    cost += data.rate.cost
+    if (stamp) repoCache.set(key, { stamp, at: Date.now(), data })
+    return data
+  }))
+  return { repos, cost }
+}
+
 const inflight = new Map<string, Promise<Snapshot>>()
 
 export function getSnapshot(opts: SyncOptions): Promise<Snapshot> {
@@ -305,7 +347,7 @@ export function getSnapshot(opts: SyncOptions): Promise<Snapshot> {
       const [owner, name] = r.split('/') as [string, string]
       return { owner, name }
     })
-    const repos = await Promise.all(refs.map(r => fetchRepo(r, ci)))
+    const { repos, cost } = await fetchRepos(refs, ci, opts.force)
     const { prs, people, labels, elsewhere } = normalize(repos, opts)
     const links = await lookupLinks([...elsewhere.values()].flat(), ci)
     for (const [p, keys] of elsewhere) {
@@ -315,7 +357,7 @@ export function getSnapshot(opts: SyncOptions): Promise<Snapshot> {
     return {
       me: repos[0]!.viewer, ci, prs, people, labels, rate,
       repos: repos.map(r => ({ key: dup(repos, r) ? `${r.owner}/${r.name}` : r.name, slug: `${r.owner}/${r.name}`, defaultBranch: r.defaultBranch })),
-      cost: repos.reduce((a, r) => a + r.rate.cost, links.cost),
+      cost: cost + links.cost,
       at: new Date().toISOString(),
       linkErrors: links.failed,
       settings: { repos: opts.repos, approvals: opts.approvals, fresh: opts.fresh },

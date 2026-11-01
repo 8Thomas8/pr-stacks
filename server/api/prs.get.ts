@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   const repos = String(q.repos ?? '').split(',').map(s => s.trim()).filter(s => SLUG.test(s)).slice(0, 30)
   const approvals = Math.min(10, Math.max(1, Math.round(Number(q.approvals)) || 1))
   try {
-    return await getSnapshot({ ci: q.ci === '1', repos: [...new Set(repos)], approvals, fresh: q.fresh === '1' })
+    return await getSnapshot({ ci: q.ci === '1', repos: [...new Set(repos)], approvals, fresh: q.fresh === '1', force: q.force === '1' })
   }
   catch (e) {
     const error = (e as Error).message
